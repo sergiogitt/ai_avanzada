@@ -8,49 +8,47 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
 </head>
 <body>
-    
         <textarea id="prompt" oninput="test()"></textarea>
         <button onclick="new_interaction()">Submit</button>
-       
+        <p id="action"></p>
     <script>
         let first_input=true;
         let id_prompt=null;
         let interation=0;
         function new_interaction(){
-            interation++;
-            document.getElementById("prompt").value=""; 
-            first_input=true;
+            if(document.getElementById("prompt").value!=""){
+                interation++;
+                document.getElementById("prompt").value=""; 
+                first_input=true;
+                document.getElementById("action").innerHTML ="Prompt inserted";
+            }else{
+                document.getElementById("action").innerHTML ="Please type something";
+            }
+            
         }
         function test(content) {
             var input = document.getElementById("prompt").value;          
             if(first_input){
-                console.log("Inserting "+document.getElementById('prompt').value);
                 $.ajax({
                         type : "POST",  
                         url  : "index.php",  
                         data : { prompt : input ,attempt:true,customer_id:1,iterations:interation},
                         success: function(res){  
-                            console.log("bien"+ res)
                             id_prompt=res;
                         }
                     });
                 first_input=false;
             }else{
-                console.log(id_prompt)
                 $.ajax({
                         type : "POST", 
                         url  : "index.php",  
                         data : { prompt : input,prompt_id:id_prompt,customer_id:1,iterations:interation},
-                        success: function(res){  
-                            console.log("updating "+ res)
+                        success: function(res){ 
+                           
                         }
                     });
             }
-        
         }
-       
-        
-        
     </script>
 </body>
 </html>
