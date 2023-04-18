@@ -10,12 +10,22 @@ if (isset($_POST['prompt'])) {
     if(isset($_POST['attempt'])){
         try
         {
-            $query="insert into tbl_initial_prompt (customer_ID, iterations, prompt) values (?,?,?)";
-            $sentence=$conection->prepare($query);
-            $data[]=$_POST["customer_id"];
-            $data[]=$_POST["iterations"];
-            $data[]=$_POST["prompt"];
-            $sentence->execute($data);
+            if($_POST['attempt']==0){
+                $query="insert into tbl_initial_prompt (customer_ID, iterations, prompt) values (?,?,?)";
+                $sentence=$conection->prepare($query);
+                $data[]=$_POST["customer_id"];
+                $data[]=$_POST["iterations"];
+                $data[]=$_POST["prompt"];
+                $sentence->execute($data);
+            }else{
+                $query="insert into tbl_prompt_iterations (PROMPT_ID, prompt_iteration, prompt_content) values (?,?,?)";
+                $sentence=$conection->prepare($query);
+                $data[]=$_POST["id_prompt"];
+                $data[]=$_POST["iterations"];
+                $data[]=$_POST["prompt"];
+                $sentence->execute($data);
+            }
+
             echo $conection->lastInsertId();
         }
         catch(PDOException $e)
@@ -25,11 +35,25 @@ if (isset($_POST['prompt'])) {
     }else{
         try
         {
-            $query="update tbl_initial_prompt set prompt=? where PROMPT_ID=?";
-            $sentence=$conection->prepare($query);
-            $data[]=$_POST["prompt"];
-            $data[]=$_POST["prompt_id"];
-            $sentence->execute($data);
+            if($_POST['initial']==1){
+                $query="update tbl_initial_prompt set prompt=? where PROMPT_ID=?";
+                $sentence=$conection->prepare($query);
+                $data[]=$_POST["prompt"];
+                $data[]=$_POST["prompt_id"];
+                $sentence->execute($data);
+                echo "Tabla inicial";
+            }else{ 
+                $query="update tbl_prompt_iterations set prompt_content=? where prompt_iteration=? && PROMPT_ID=?";
+                $sentence=$conection->prepare($query);
+                $data[]=$_POST["prompt"];
+                $data[]=$_POST["iterations"];
+                $data[]=$_POST["prompt_id"];
+
+                $sentence->execute($data);
+                echo "Tabla siguiente";
+            }
+           
+            
         }
         catch(PDOException $e)
         {

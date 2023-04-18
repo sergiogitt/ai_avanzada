@@ -19,9 +19,11 @@
 <script>
         let number_actual_block=1;
         let number_new_block=number_actual_block+1;
-        let id_prompt=[null];
+        let ids_prompts=[];
         let interation=0;
-        let inputs=[null,true];
+        let inputs=[];
+        
+        inputs[1]=true;
         function new_interaction(){
             let name_prompt="prompt"+number_actual_block;
             let name_last_div="block"+number_actual_block;
@@ -89,24 +91,33 @@
             console.log(inputs);
             let prompt="prompt"+number;
             let action="action"+number;
-            var input = document.getElementById(prompt).value;          
+            var input = document.getElementById(prompt).value;    
+           
             if(inputs[number]){
                 $.ajax({
                         type : "POST",  
                         url  : "back.php",  
-                        data : { prompt : input ,attempt:true,customer_id:1,iterations:interation},
+                        data : { prompt : input ,attempt:interation,customer_id:1,iterations:number,id_prompt:ids_prompts[1]},
                         success: function(res){  
-                            id_prompt[number]=res;
+                            if(interation==0){
+                                ids_prompts[number]=res;
+                            }
+                            
+                            console.log(res);
                         }
                     });
                 inputs[number]=false;
             }else{
+                let ini=0;
+                if(number==1){
+                    ini=1;
+                }
                 $.ajax({
                         type : "POST", 
                         url  : "back.php",  
-                        data : { prompt : input,prompt_id:id_prompt[number],customer_id:1,iterations:interation},
+                        data : { prompt : input,prompt_id:ids_prompts[1],customer_id:1,iterations:number,initial:ini},
                         success: function(res){ 
-                           
+                           console.log(res)
                         }
                     });
             }
