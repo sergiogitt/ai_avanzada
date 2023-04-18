@@ -9,47 +9,50 @@
 </head>
 <body>
     <div id="block1">
-        <textarea id="prompt1" ></textarea>
+        <textarea id="prompt1" oninput="inserting_into_db(1)" rows='20' cols='70'></textarea>
         <button onclick="send_ai(1)">Send To AI</button>
-        <button onclick="new_interaction(1)">New iteration +</button>
+        <button onclick="new_interaction()">New iteration +</button>
         <p id="action1"></p>
     </div>
-    <script>
+    
+</body>
+<script>
         let number_actual_block=1;
         let number_new_block=number_actual_block+1;
-        let first_input=true;
-        let id_prompt=null;
+        let id_prompt=[null];
         let interation=0;
+        let inputs=[null,true];
         function new_interaction(){
             let name_prompt="prompt"+number_actual_block;
             let name_last_div="block"+number_actual_block;
             let name_last_action="action"+number_actual_block;
             if(document.getElementById(name_prompt).value!=""){
-                document.getElementById(name_last_action).innerHTML ="";
-            
+                document.getElementById(name_last_action).innerHTML ="";     
                 interation++;
-                first_input=true;
                 
-               
-
                 // create a new div element
                 var newDiv = document.createElement("div");
                 newDiv.setAttribute("id", "block"+number_new_block);
+
                 var newTextarea = document.createElement("textarea");
                 newTextarea.setAttribute("id", "prompt"+number_new_block);
-                
+                newTextarea.setAttribute("rows", "20");
+                newTextarea.setAttribute("cols", "70");
+                newTextarea.setAttribute("oninput",`inserting_into_db('${number_new_block}')`);
                 
                 // create a new button element
                 var newButton = document.createElement("button");
                 newButton.innerHTML = "Send to AI";
-                
                 newButton.setAttribute("onclick",`send_ai('${number_new_block}')`);
+                
                 var newIterationButton = document.createElement("button");
                 newIterationButton.innerHTML = "New iteration +";
+                newIterationButton.setAttribute("onclick",`new_interaction('${number_new_block}')`);
+
                 var newP = document.createElement("p");
                 newP.setAttribute("id", "action"+number_new_block);
                 newP.appendChild(newTextarea);
-                newIterationButton.setAttribute("onclick",`new_interaction('${number_new_block}')`);
+                
 
                 // append the button to the new div
                 newDiv.appendChild(newTextarea);
@@ -60,6 +63,7 @@
                 document.body.appendChild(newDiv);
                 number_actual_block++;
                 number_new_block++;
+                inputs[number_actual_block]=true;
 
             }else{
                 document.getElementById(name_last_action).innerHTML ="Please type something before adding other iteration";
@@ -67,12 +71,13 @@
             
         }
         function send_ai(number){
+            console.log(inputs);
             let prompt="prompt"+number;
             let action="action"+number;
             if(document.getElementById(prompt).value!=""){
                 interation++;
                 document.getElementById(prompt).value=""; 
-                first_input=true;
+                inputs[number]=false;
                 document.getElementById(action).innerHTML ="Prompt inserted";
 
             }else{
@@ -80,25 +85,26 @@
             }
             
         }
-        function test(number) {
+        function inserting_into_db(number) {
+            console.log(inputs);
             let prompt="prompt"+number;
             let action="action"+number;
             var input = document.getElementById(prompt).value;          
-            if(first_input){
+            if(inputs[number]){
                 $.ajax({
                         type : "POST",  
                         url  : "back.php",  
                         data : { prompt : input ,attempt:true,customer_id:1,iterations:interation},
                         success: function(res){  
-                            id_prompt=res;
+                            id_prompt[number]=res;
                         }
                     });
-                first_input=false;
+                inputs[number]=false;
             }else{
                 $.ajax({
                         type : "POST", 
                         url  : "back.php",  
-                        data : { prompt : input,prompt_id:id_prompt,customer_id:1,iterations:interation},
+                        data : { prompt : input,prompt_id:id_prompt[number],customer_id:1,iterations:interation},
                         success: function(res){ 
                            
                         }
@@ -106,5 +112,4 @@
             }
         }
     </script>
-</body>
 </html>
