@@ -33,30 +33,33 @@
             //Control if there is something on the textarea
             if(document.getElementById(prompt).value!=""){
                 const REACT_APP_OPENAI_API_KEY="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";
-                let data = {
-                prompt: document.getElementById(prompt).value,
-                max_tokens: 5,
-                temperature: 0.5
-                };
-                //Call to the Open ai To DO
-                fetch('https://api.openai.com/v1/engines/davinci-codex/completions', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${REACT_APP_OPENAI_API_KEY}`
-                },
-                body: JSON.stringify(data)
-                })
-                .then(response => response.json())
-                .then(json => {
-                    // Parse the JSON response and update the action element
-                    document.getElementById(action).innerHTML = json.choices[0].text;
-                })
-                .catch(error => {
-                    // Handle errors
-                    console.error(error);
-                    document.getElementById(action).innerHTML = "Error: " + error.message;
-                });
+               // Define the data variable with prompt and API parameters
+            let data = {
+            prompt: "Once upon a time",
+            max_tokens: 5,
+            temperature: 0.5
+            };
+
+            // Call the OpenAI API using fetch
+            fetch('https://api.openai.com/v1/engines/davinci-codex/completions', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer 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',
+                "OpenAI-Organization": "org-mnTZe8zzpQ0PTLKoE2aD8goc"
+            },
+            body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(json => {
+                // Parse the JSON response and log the result
+                console.log(json.choices[0].text);
+            })
+            .catch(error => {
+                // Handle errors
+                console.error(error);
+            });
+
                 
 
             }else{
