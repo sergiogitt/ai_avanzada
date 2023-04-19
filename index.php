@@ -32,33 +32,35 @@
             let action="action"+number;
             //Control if there is something on the textarea
             if(document.getElementById(prompt).value!=""){
-                const REACT_APP_OPENAI_API_KEY="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";
+                const REACT_APP_OPENAI_API_KEY="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";
                // Define the data variable with prompt and API parameters
-            let data = {
-            prompt: "Once upon a time",
-            max_tokens: 5,
-            temperature: 0.5
-            };
+               const API_ENDPOINT = "https://api.openai.com/v1/engines/text-davinci-003/completions";
 
-            // Call the OpenAI API using fetch
-            fetch('https://api.openai.com/v1/engines/davinci-codex/completions', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer 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',
-                "OpenAI-Organization": "org-mnTZe8zzpQ0PTLKoE2aD8goc"
-            },
-            body: JSON.stringify(data)
-            })
-            .then(response => response.json())
-            .then(json => {
-                // Parse the JSON response and log the result
-                console.log(json.choices[0].text);
-            })
-            .catch(error => {
-                // Handle errors
-                
-            });
+                // Parámetros de la solicitud
+                const prompt = "Dime un chiste";
+                const max_tokens = 5;
+                const n = 1;
+
+                // Objeto de opciones para la solicitud
+                const options = {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer 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"
+                },
+                body: JSON.stringify({
+                    prompt: prompt,
+                    max_tokens: max_tokens,
+                    n: n,
+                    
+                })
+                };
+
+                // Hacer la solicitud a la API
+                fetch(API_ENDPOINT, options)
+                .then(response => response.json())
+                .then(data => console.log(data))
+                .catch(error => console.error(error));
 
                 
 
