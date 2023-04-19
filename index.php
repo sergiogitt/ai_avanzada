@@ -57,7 +57,7 @@
             })
             .catch(error => {
                 // Handle errors
-                console.error(error);
+                
             });
 
                 
