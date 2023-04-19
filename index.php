@@ -21,18 +21,56 @@
         let number_new_block=number_actual_block+1;
         let ids_prompts=[];
         let interation=0;
-        let inputs=[];
-        
-        inputs[1]=true;
+        let control_insertion_prompts=[];        
+        control_insertion_prompts[1]=true;
+        function test(){
+            console.log("go")
+        }
+        function send_ai(number){
+            //ID of elements
+            let prompt="prompt"+number;
+            let action="action"+number;
+            //Control if there is something on the textarea
+            if(document.getElementById(prompt).value!=""){
+                const REACT_APP_OPENAI_API_KEY="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";
+                let data = {
+                prompt: document.getElementById(prompt).value,
+                max_tokens: 5,
+                temperature: 0.5
+                };
+                //Call to the Open ai To DO
+                fetch('https://api.openai.com/v1/engines/davinci-codex/completions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${REACT_APP_OPENAI_API_KEY}`
+                },
+                body: JSON.stringify(data)
+                })
+                .then(response => response.json())
+                .then(json => {
+                    // Parse the JSON response and update the action element
+                    document.getElementById(action).innerHTML = json.choices[0].text;
+                })
+                .catch(error => {
+                    // Handle errors
+                    console.error(error);
+                    document.getElementById(action).innerHTML = "Error: " + error.message;
+                });
+                
+
+            }else{
+                document.getElementById(action).innerHTML ="Please type something";
+            }
+            
+        }
         function new_interaction(){
             let name_prompt="prompt"+number_actual_block;
-            let name_last_div="block"+number_actual_block;
             let name_last_action="action"+number_actual_block;
             if(document.getElementById(name_prompt).value!=""){
                 document.getElementById(name_last_action).innerHTML ="";     
                 interation++;
-                
-                // create a new div element
+                //Creating elemenst dinamically
                 var newDiv = document.createElement("div");
                 newDiv.setAttribute("id", "block"+number_new_block);
 
@@ -42,7 +80,6 @@
                 newTextarea.setAttribute("cols", "70");
                 newTextarea.setAttribute("oninput",`inserting_into_db('${number_new_block}')`);
                 
-                // create a new button element
                 var newButton = document.createElement("button");
                 newButton.innerHTML = "Send to AI";
                 newButton.setAttribute("onclick",`send_ai('${number_new_block}')`);
@@ -55,45 +92,34 @@
                 newP.setAttribute("id", "action"+number_new_block);
                 newP.appendChild(newTextarea);
                 
-
-                // append the button to the new div
+                //Adding elemensts to the new div
                 newDiv.appendChild(newTextarea);
                 newDiv.appendChild(newButton);
                 newDiv.appendChild(newIterationButton);
                 newDiv.appendChild(newP);
-                // add the new div before the selected div
+                //Adding de new div to the body
                 document.body.appendChild(newDiv);
+                //Updating new values of block
                 number_actual_block++;
                 number_new_block++;
-                inputs[number_actual_block]=true;
+                //Adding new element to the array which contorls the insertions or updates of the prompts
+                control_insertion_prompts[number_actual_block]=true;
 
             }else{
                 document.getElementById(name_last_action).innerHTML ="Please type something before adding other iteration";
             }
             
         }
-        function send_ai(number){
-            console.log(inputs);
-            let prompt="prompt"+number;
-            let action="action"+number;
-            if(document.getElementById(prompt).value!=""){
-                interation++;
-                document.getElementById(prompt).value=""; 
-                inputs[number]=false;
-                document.getElementById(action).innerHTML ="Prompt inserted";
-
-            }else{
-                document.getElementById(action).innerHTML ="Please type something";
-            }
-            
-        }
+        
         function inserting_into_db(number) {
-            console.log(inputs);
+                        //ID of elements
+
             let prompt="prompt"+number;
             let action="action"+number;
             var input = document.getElementById(prompt).value;    
            
-            if(inputs[number]){
+            if(control_insertion_prompts[number]){
+                //New insertion of the data
                 $.ajax({
                         type : "POST",  
                         url  : "back.php",  
@@ -101,13 +127,12 @@
                         success: function(res){  
                             if(interation==0){
                                 ids_prompts[number]=res;
-                            }
-                            
-                            console.log(res);
+                            }                      
                         }
                     });
-                inputs[number]=false;
+                control_insertion_prompts[number]=false;
             }else{
+                //Nupdte of the current prompt
                 let ini=0;
                 if(number==1){
                     ini=1;
@@ -117,7 +142,6 @@
                         url  : "back.php",  
                         data : { prompt : input,prompt_id:ids_prompts[1],customer_id:1,iterations:number,initial:ini},
                         success: function(res){ 
-                           console.log(res)
                         }
                     });
             }
