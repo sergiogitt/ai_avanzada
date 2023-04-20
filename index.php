@@ -7,7 +7,7 @@
     <title>Document</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
 </head>
-<body onload="test()">
+<body onload="get_actual_data_user(1)">
     <div id="block1">
         <textarea id="prompt1" oninput="inserting_into_db(1)" rows='20' cols='70'></textarea>
         <button onclick="send_ai(1)">Send To AI</button>
@@ -25,16 +25,14 @@
         control_insertion_prompts[1]=true;
         let ini=0;
         let getting_info=false;
-function test(){
+function get_actual_data_user(user_id){
     $.ajax({
             type : "POST",  
             url  : "back.php",  
-            data : { customer_id:1,getFirstData:true},
+            data : { customer_id:user_id,getFirstData:true},
             success: function(res){   
                 let answer=JSON.parse(res);
                 if(answer.not_found!="Not found that client"){
-                    console.log(res)    
-                    
                     control_insertion_prompts[1]=false;
                     getting_info=true;
                     ids_prompts[1]=answer.PROMPT_ID;
@@ -42,46 +40,13 @@ function test(){
                     $.ajax({
                     type : "POST",  
                     url  : "back.php",  
-                    data : { customer_id:1,getSecondData:true,prompt_id:ids_prompts[1]},
+                    data : { customer_id:user_id,getSecondData:true,prompt_id:ids_prompts[1]},
                     success: function(res2){  
-                           
                         let data=JSON.parse(res2);
                         data.forEach(element => {
-                            
-                            var newDiv = document.createElement("div");
-                            newDiv.setAttribute("id", "block"+number_new_block);
-
-                            var newTextarea = document.createElement("textarea");
-                            newTextarea.setAttribute("id", "prompt"+number_new_block);
-                            newTextarea.setAttribute("rows", "20");
-                            newTextarea.setAttribute("cols", "70");
-                            newTextarea.setAttribute("oninput",`inserting_into_db('${number_new_block}')`);
-                            newTextarea.innerHTML=element.prompt_content;
-                            
-                            var newButton = document.createElement("button");
-                            newButton.innerHTML = "Send to AI";
-                            newButton.setAttribute("onclick",`send_ai('${number_new_block}')`);
-                            
-                            var newIterationButton = document.createElement("button");
-                            newIterationButton.innerHTML = "New iteration +";
-                            newIterationButton.setAttribute("onclick",`new_interaction('${number_new_block}')`);
-
-                            var newP = document.createElement("p");
-                            newP.setAttribute("id", "action"+number_new_block);
-                            newP.appendChild(newTextarea);
-                            
-                            //Adding elemensts to the new div
-                            newDiv.appendChild(newTextarea);
-                            newDiv.appendChild(newButton);
-                            newDiv.appendChild(newIterationButton);
-                            newDiv.appendChild(newP);
-                            //Adding de new div to the body
-                            document.body.appendChild(newDiv);
-                            //Updating new values of block
-                            number_actual_block++;
-                            number_new_block++;
+                            create_new_prompts_inputs(true,element);
                             //Adding new element to the array which contorls the insertions or updates of the prompts
-                            control_insertion_prompts[number_actual_block]=true;
+                            control_insertion_prompts[number_actual_block]=false;
                         });
                         
                         
@@ -120,8 +85,6 @@ function test(){
                     "model": "gpt-3.5-turbo",
                     "messages": [{"role": "user", "content": "Let me know if the api is working"}],
                     "temperature": 0.7
-                
-                    
                 })
                 };
 
@@ -131,18 +94,12 @@ function test(){
                 .then(data => console.log(data))
                 .catch(error => console.error(error));
 
-                
-
             }else{
                 document.getElementById(action).innerHTML ="Please type something";
             }
             
         }
-        function new_interaction(){
-            let name_prompt="prompt"+number_actual_block;
-            let name_last_action="action"+number_actual_block;
-            if(document.getElementById(name_prompt).value!=""){
-                document.getElementById(name_last_action).innerHTML ="";     
+        function create_new_prompts_inputs(loading_old_data,element){
                 interation++;
                 //Creating elemenst dinamically
                 var newDiv = document.createElement("div");
@@ -153,6 +110,9 @@ function test(){
                 newTextarea.setAttribute("rows", "20");
                 newTextarea.setAttribute("cols", "70");
                 newTextarea.setAttribute("oninput",`inserting_into_db('${number_new_block}')`);
+                if(loading_old_data){
+                    newTextarea.innerHTML=element.prompt_content;
+                }
                 
                 var newButton = document.createElement("button");
                 newButton.innerHTML = "Send to AI";
@@ -176,13 +136,16 @@ function test(){
                 //Updating new values of block
                 number_actual_block++;
                 number_new_block++;
+        }
+        function new_interaction(){
+            if(document.getElementById("prompt"+number_actual_block).value!=""){
+                document.getElementById("action"+number_actual_block).innerHTML ="";     
+                create_new_prompts_inputs(false);
                 //Adding new element to the array which contorls the insertions or updates of the prompts
-                control_insertion_prompts[number_actual_block]=false;
-
+                control_insertion_prompts[number_actual_block]=true;
             }else{
                 document.getElementById(name_last_action).innerHTML ="Please type something before adding other iteration";
             }
-            
         }
         
         function inserting_into_db(number) {
@@ -190,9 +153,7 @@ function test(){
             let prompt="prompt"+number;
             let action="action"+number;
             var input = document.getElementById(prompt).value;    
-           
             if(control_insertion_prompts[number]){
-                console.log("Inserting");
                 //New insertion of the data
                 $.ajax({
                         type : "POST",  
@@ -206,12 +167,9 @@ function test(){
                     });
                 control_insertion_prompts[number]=false;
             }else{
-                console.log("Updating");
                 //Nupdte of the current prompt
-                console.log(ini)
                 if(number==1){
                     ini=1;
-                    console.log("initial");
                 }else{
                     ini=0;
                 }
