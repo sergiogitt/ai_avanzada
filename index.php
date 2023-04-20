@@ -177,7 +177,7 @@ function test(){
                 number_actual_block++;
                 number_new_block++;
                 //Adding new element to the array which contorls the insertions or updates of the prompts
-                control_insertion_prompts[number_actual_block]=true;
+                control_insertion_prompts[number_actual_block]=false;
 
             }else{
                 document.getElementById(name_last_action).innerHTML ="Please type something before adding other iteration";
