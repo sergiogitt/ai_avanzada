@@ -64,7 +64,7 @@ if (isset($_POST['prompt'])) {
     }
    
 }
-if(isset($_POST['getData'])){
+if(isset($_POST['getFirstData'])){
     try
    {
      
@@ -72,7 +72,29 @@ if(isset($_POST['getData'])){
        $sentence=$conection->prepare($query);
        $data[]=$_POST["customer_id"];
        $sentence->execute($data);
-       echo  json_encode($sentence->fetch(PDO::FETCH_ASSOC));
+       if($sentence->rowCount()>0){
+        echo  json_encode($sentence->fetch(PDO::FETCH_ASSOC));
+       }else{
+        echo  json_encode(["not_found"=>"Not found that client"]);
+       }
+       
+       
+   }
+   catch(PDOException $e)
+   {
+       echo "Cant execute the query. Error:".$e->getMessage();
+   }
+
+}
+if(isset($_POST['getSecondData'])){
+    try
+   {
+     
+       $query="select * from tbl_prompt_iterations where PROMPT_ID=?";
+       $sentence=$conection->prepare($query);
+       $data[]=$_POST["prompt_id"];
+       $sentence->execute($data);
+       echo  json_encode($sentence->fetchAll(PDO::FETCH_ASSOC));
        
    }
    catch(PDOException $e)

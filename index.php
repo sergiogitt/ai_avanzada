@@ -29,16 +29,69 @@ function test(){
     $.ajax({
             type : "POST",  
             url  : "back.php",  
-            data : { customer_id:1,getData:true},
-            success: function(res){  
-                console.log(res)    
+            data : { customer_id:1,getFirstData:true},
+            success: function(res){   
                 let answer=JSON.parse(res);
-                control_insertion_prompts[1]=false;
-                getting_info=true;
-                ids_prompts[1]=answer.PROMPT_ID;
-                document.getElementById("prompt1").value=answer.prompt;
+                if(answer.not_found!="Not found that client"){
+                    console.log(res)    
+                    
+                    control_insertion_prompts[1]=false;
+                    getting_info=true;
+                    ids_prompts[1]=answer.PROMPT_ID;
+                    document.getElementById("prompt1").value=answer.prompt;
+                    $.ajax({
+                    type : "POST",  
+                    url  : "back.php",  
+                    data : { customer_id:1,getSecondData:true,prompt_id:ids_prompts[1]},
+                    success: function(res2){  
+                           
+                        let data=JSON.parse(res2);
+                        data.forEach(element => {
+                            
+                            var newDiv = document.createElement("div");
+                            newDiv.setAttribute("id", "block"+number_new_block);
+
+                            var newTextarea = document.createElement("textarea");
+                            newTextarea.setAttribute("id", "prompt"+number_new_block);
+                            newTextarea.setAttribute("rows", "20");
+                            newTextarea.setAttribute("cols", "70");
+                            newTextarea.setAttribute("oninput",`inserting_into_db('${number_new_block}')`);
+                            newTextarea.innerHTML=element.prompt_content;
+                            
+                            var newButton = document.createElement("button");
+                            newButton.innerHTML = "Send to AI";
+                            newButton.setAttribute("onclick",`send_ai('${number_new_block}')`);
+                            
+                            var newIterationButton = document.createElement("button");
+                            newIterationButton.innerHTML = "New iteration +";
+                            newIterationButton.setAttribute("onclick",`new_interaction('${number_new_block}')`);
+
+                            var newP = document.createElement("p");
+                            newP.setAttribute("id", "action"+number_new_block);
+                            newP.appendChild(newTextarea);
+                            
+                            //Adding elemensts to the new div
+                            newDiv.appendChild(newTextarea);
+                            newDiv.appendChild(newButton);
+                            newDiv.appendChild(newIterationButton);
+                            newDiv.appendChild(newP);
+                            //Adding de new div to the body
+                            document.body.appendChild(newDiv);
+                            //Updating new values of block
+                            number_actual_block++;
+                            number_new_block++;
+                            //Adding new element to the array which contorls the insertions or updates of the prompts
+                            control_insertion_prompts[number_actual_block]=true;
+                        });
+                        
+                        
+                        }
+                    });
+                }
+               
             }
         });
+    
 }
         function send_ai(number){
             //ID of elements
