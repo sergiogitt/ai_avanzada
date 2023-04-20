@@ -1,12 +1,13 @@
 <?php
 require "src/bd_config.php";
+try {
+    $conection = new PDO("mysql:host=".SERVIDOR_BD.":3307;dbname=".NOMBRE_BD, USUARIO_BD, CLAVE_BD, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"));
+}
+catch(PDOException $e) {
+    exit("Connection error: " . $e->getMessage());
+}
 if (isset($_POST['prompt'])) {
-    try {
-        $conection = new PDO("mysql:host=".SERVIDOR_BD.":3307;dbname=".NOMBRE_BD, USUARIO_BD, CLAVE_BD, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"));
-    }
-    catch(PDOException $e) {
-        exit("Connection error: " . $e->getMessage());
-    }
+  
     if(isset($_POST['attempt'])){
         try
         {
@@ -33,6 +34,7 @@ if (isset($_POST['prompt'])) {
             echo "Cant execute the query. Error:".$e->getMessage();
         }
     }else{
+        echo "inside";
         try
         {
             if($_POST['initial']==1){
@@ -60,6 +62,24 @@ if (isset($_POST['prompt'])) {
             echo "Cant execute the query. Error:".$e->getMessage();
         }
     }
+   
+}
+if(isset($_POST['getData'])){
+    try
+   {
+     
+       $query="select * from tbl_initial_prompt where customer_ID=?";
+       $sentence=$conection->prepare($query);
+       $data[]=$_POST["customer_id"];
+       $sentence->execute($data);
+       echo  json_encode($sentence->fetch(PDO::FETCH_ASSOC));
+       
+   }
+   catch(PDOException $e)
+   {
+       echo "Cant execute the query. Error:".$e->getMessage();
+   }
+
 }
 ?>
 

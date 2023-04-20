@@ -7,7 +7,7 @@
     <title>Document</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
 </head>
-<body>
+<body onload="test()">
     <div id="block1">
         <textarea id="prompt1" oninput="inserting_into_db(1)" rows='20' cols='70'></textarea>
         <button onclick="send_ai(1)">Send To AI</button>
@@ -23,9 +23,23 @@
         let interation=0;
         let control_insertion_prompts=[];        
         control_insertion_prompts[1]=true;
-        function test(){
-            console.log("go")
-        }
+        let ini=0;
+        let getting_info=false;
+function test(){
+    $.ajax({
+            type : "POST",  
+            url  : "back.php",  
+            data : { customer_id:1,getData:true},
+            success: function(res){  
+                console.log(res)    
+                let answer=JSON.parse(res);
+                control_insertion_prompts[1]=false;
+                getting_info=true;
+                ids_prompts[1]=answer.PROMPT_ID;
+                document.getElementById("prompt1").value=answer.prompt;
+            }
+        });
+}
         function send_ai(number){
             //ID of elements
             let prompt="prompt"+number;
@@ -34,7 +48,7 @@
             if(document.getElementById(prompt).value!=""){
                 const REACT_APP_OPENAI_API_KEY="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";
                // Define the data variable with prompt and API parameters
-               const API_ENDPOINT = "https://api.openai.com/v1/engines/text-davinci-003/completions";
+               const API_ENDPOINT = "https://api.openai.com/v1/chat/completions";
 
                 // Parámetros de la solicitud
                 const prompt = "Dime un chiste";
@@ -49,9 +63,11 @@
                     "Authorization": "Bearer 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"
                 },
                 body: JSON.stringify({
-                    prompt: prompt,
-                    max_tokens: max_tokens,
-                    n: n,
+                    
+                    "model": "gpt-3.5-turbo",
+                    "messages": [{"role": "user", "content": "Let me know if the api is working"}],
+                    "temperature": 0.7
+                
                     
                 })
                 };
@@ -117,13 +133,13 @@
         }
         
         function inserting_into_db(number) {
-                        //ID of elements
-
+            //ID of elements
             let prompt="prompt"+number;
             let action="action"+number;
             var input = document.getElementById(prompt).value;    
            
             if(control_insertion_prompts[number]){
+                console.log("Inserting");
                 //New insertion of the data
                 $.ajax({
                         type : "POST",  
@@ -137,11 +153,16 @@
                     });
                 control_insertion_prompts[number]=false;
             }else{
+                console.log("Updating");
                 //Nupdte of the current prompt
-                let ini=0;
+                console.log(ini)
                 if(number==1){
                     ini=1;
+                    console.log("initial");
+                }else{
+                    ini=0;
                 }
+                console.log(ids_prompts[1]);
                 $.ajax({
                         type : "POST", 
                         url  : "back.php",  
