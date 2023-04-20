@@ -6,3 +6,6 @@ div#flex_container{
 #flex_container>div:first-child{
     width:  70%;
 }
+#flex_container>div:last-child{
+    width:  30%;
+}
