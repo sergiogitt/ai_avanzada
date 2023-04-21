@@ -86,6 +86,28 @@ if(isset($_POST['getFirstData'])){
    }
 
 }
+if(isset($_POST['getUsers'])){
+    try
+   {
+     
+       $query="select * from tbl_users";
+       $sentence=$conection->prepare($query);
+       
+       $sentence->execute([]);
+       if($sentence->rowCount()>0){
+        echo  json_encode($sentence->fetchAll(PDO::FETCH_ASSOC));
+       }else{
+        echo  json_encode(["not_users"=>"Users are empty"]);
+       }
+       
+       
+   }
+   catch(PDOException $e)
+   {
+       echo "Cant execute the query. Error:".$e->getMessage();
+   }
+
+}
 if(isset($_POST['getSecondData'])){
     try
    {
