@@ -7,6 +7,7 @@
     <title>Document</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
@@ -16,7 +17,7 @@
 <div id="flex_container">
     <div id="blocks_container">
         <div id="block1">
-            <textarea id="prompt1" oninput="inserting_into_db(1)" rows='20' cols='70'></textarea>
+            <textarea id="prompt1" oninput="inserting_into_db(1)"  rows='20' cols='70'></textarea>
             <button type="submit" class="btn btn-primary" onclick="send_ai(1)">Send To AI</button>
             <button type="submit" class="btn btn-primary" onclick="new_interaction()">New iteration +</button>
             <p id="action1"></p>
@@ -26,6 +27,7 @@
     <div id="response">
         <h3>AI response</h3>
         <p id="response_ai"></p>
+        <div id="loading"></div>
     </div>
 </div>
 </body>
@@ -73,10 +75,19 @@
         }
         function send_ai(number){
             //ID of elements
+            console.log(number);
+            
             let prompt1="prompt"+number;
             let action="action"+number;
-            //Control if there is something on the textarea
+            let buttons_to_disable=document.getElementsByTagName('button');
+            
             if(document.getElementById(prompt1).value!=""){
+                document.getElementById("loading").setAttribute('class',"spinner-border");
+                //Control if there is something on the textarea
+                document.getElementById(prompt1).setAttribute('disabled', true);
+                for (let i = 0; i < buttons_to_disable.length; i++) {
+                    buttons_to_disable[i].setAttribute('disabled', true);
+                }
                 const REACT_APP_OPENAI_API_KEY="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";
                // Define the data variable with prompt and API parameters
                const API_ENDPOINT = "https://api.openai.com/v1/chat/completions";
@@ -110,8 +121,34 @@
                     console.log(content)
                     var newP = document.getElementById("response_ai");
                     newP.innerHTML=content;
-                   
-                    document.c("response").appendChild(newP);
+                    document.getElementById("loading").removeAttribute('class');
+                    for (let i = 0; i < buttons_to_disable.length; i++) {
+                        buttons_to_disable[i].removeAttribute('disabled');
+                    }
+                    document.getElementById(prompt1).removeAttribute('disabled');
+                    document.getElementById("response").appendChild(newP);
+                    let num=number;
+                    num++;
+                    
+                    let next_prompt="prompt"+(num);
+
+                    console.log("Next prompt"+next_prompt);
+                    console.log("Next number"+num);
+                    if(document.getElementById(next_prompt)==null){
+                        create_new_prompts_inputs(false);
+                        $.ajax({
+                        type : "POST",  
+                        url  : "back.php",  
+                        data : { prompt : content ,attempt:interation,customer_id:1,iterations:num,id_prompt:ids_prompts[1]},
+                        success: function(res){  
+                            if(interation==0){
+                                ids_prompts[number]=res;
+                            }                      
+                        }
+                    });
+                control_insertion_prompts[number]=false;
+                    }
+                    document.getElementById(next_prompt).value=document.getElementById(next_prompt).value+"\nAPI RESPONE: "+content;
                 })
                 .catch(error => console.error(error));
 
@@ -137,7 +174,7 @@
                 
                 var newButton = document.createElement("button");
                 newButton.innerHTML = "Send to AI";
-                newButton.setAttribute("onclick",`send_ai('${number_new_block}')`);
+                newButton.setAttribute("onclick",`send_ai(${number_new_block})`);
                 newButton.setAttribute("type",`submit`);
                 newButton.setAttribute("class",`btn btn-primary`);
                 
