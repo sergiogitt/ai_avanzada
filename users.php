@@ -17,7 +17,8 @@
     <button class="btn btn-primary" onClick="create_user_form()" id="new_user_button">Add new user</button>
 </body>
 <script>
-
+    let editing_user=[];
+    let name_editing_user;
     function load_users(){
         $.ajax({
             type : "POST", 
@@ -31,13 +32,15 @@
                 newTable.setAttribute("border", 1);
                 newTable.setAttribute("id", "table_users");
                 document.body.appendChild(newTable);
-                newTable.innerHTML="<tr><th>Id</th><th>Name</th></tr>";                
+                newTable.innerHTML="<tr><th>Id</th><th>Name</th><th>Actions</th></tr>";                
                 answer.forEach(element => {
                     var newRow = document.createElement("tr");
                     var newColumn1 = document.createElement("td");
+                    newColumn1.setAttribute("id","id_user_"+element.ID);
                     var link = document.createElement("a");
                     var name=document.createTextNode(element.display_name);
                     var newColumn2 = document.createElement("td");
+                    newColumn2.setAttribute("id","name_user_"+element.ID);
                     var id=document.createTextNode(element.ID);
                     link.appendChild(name);
                     link.setAttribute("href", "index.php"+"?user_id="+element.ID);
@@ -46,16 +49,46 @@
                     newRow.appendChild(newColumn1);
                     newRow.appendChild(newColumn2);
                     newTable.appendChild(newRow);
-                    console.log(element)
-                    
+                    let actionButton = "<td id='action_button_"+element.ID+"'><button  class='button_link' onClick=\"edit_user('" + element.ID + "','"+element.display_name+"')\">Edit</button></td>";
+
+                    newRow.innerHTML+=actionButton;
                 });
                 
-                }else{
-
                 }
                
             }
         });
+    }
+    function confirm_editing(user_id,name){
+        console.log(user_id+name)
+        $.ajax({
+                type : "POST",  
+                url  : "back.php",  
+                data : { edit_user:user_id,new_name:name},
+                success: function(res){  
+                   
+                    //location.reload();
+                }
+            });
+    }
+    function cancel_editing(user_id,name){
+        document.getElementById("action_button_"+user_id).innerHTML="<button class='button_link' onClick=\"edit_user('" +user_id + "','"+name+"')\">Edit</button>";
+        console.log(name)
+        document.getElementById("name_user_"+user_id).innerHTML="<a href='index.php?user_id="+user_id+"'>"+name+"</a>";
+    }
+    function edit_user(user_id,value){
+        console.log("action_button_"+user_id)
+        if(editing_user.length>0){
+            document.getElementById("name_user_"+editing_user[0]).innerHTML="<a href='index.php?user_id="+editing_user[0]+"'>"+name_editing_user+"</a>";
+            document.getElementById("action_button_"+editing_user[0]).innerHTML="<button  class='button_link' onClick=\"edit_user('" +editing_user[0] + "','"+name_editing_user+"')\">Edit</button>";
+            editing_user=[];
+            name_editing_user="";
+        }
+        document.getElementById("action_button_"+user_id).innerHTML="<button onClick=\"cancel_editing('" +user_id + "','"+value+"')\">Cancel</button><button onClick=\"confirm_editing('" +user_id + "','"+value+"')\">Confirm</button>";
+
+        editing_user.push(user_id);
+        name_editing_user=value;
+        document.getElementById("name_user_"+user_id).innerHTML="<input type='text' value="+value+">";
     }
     function create_user_form(){
         var newDiv = document.createElement("div");

@@ -127,6 +127,25 @@ if(isset($_POST['new_user'])){
    }
 
 }
+if(isset($_POST['new_name'])){
+    try
+   {
+     
+    $query="update tbl_users set display_name=? where ID=?";
+    $sentence=$conection->prepare($query);
+    $data[]=$_POST["new_name"];
+    $data[]=$_POST["edit_user"];
+    $sentence->execute($data);   
+    }
+       
+       
+   
+   catch(PDOException $e)
+   {
+       echo "Cant execute the query. Error:".$e->getMessage();
+   }
+
+}
 if(isset($_POST['getSecondData'])){
     try
    {
