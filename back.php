@@ -108,6 +108,25 @@ if(isset($_POST['getUsers'])){
    }
 
 }
+if(isset($_POST['new_user'])){
+    try
+   {
+     
+       $query="insert into tbl_users (display_name) values (?)";
+                $sentence=$conection->prepare($query);
+                $data[]=$_POST["new_user"];
+                
+                $sentence->execute($data);
+       }
+       
+       
+   
+   catch(PDOException $e)
+   {
+       echo "Cant execute the query. Error:".$e->getMessage();
+   }
+
+}
 if(isset($_POST['getSecondData'])){
     try
    {
