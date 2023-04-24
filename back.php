@@ -38,16 +38,18 @@ if (isset($_POST['prompt'])) {
         try
         {
             if($_POST['initial']==1){
-                $query="update tbl_initial_prompt set prompt=? where PROMPT_ID=?";
+                $query="update tbl_initial_prompt set prompt=?,date_last_change=? where PROMPT_ID=?";
                 $sentence=$conection->prepare($query);
                 $data[]=$_POST["prompt"];
+                $data[]=date("Y-m-d H:i:s");
                 $data[]=$_POST["prompt_id"];
                 $sentence->execute($data);
                 echo "Tabla inicial";
             }else{ 
-                $query="update tbl_prompt_iterations set prompt_content=? where prompt_iteration=? && PROMPT_ID=?";
+                $query="update tbl_prompt_iterations set prompt_content=?,date_last_change=? where prompt_iteration=? && PROMPT_ID=?";
                 $sentence=$conection->prepare($query);
                 $data[]=$_POST["prompt"];
+                $data[]=date("Y-m-d H:i:s");
                 $data[]=$_POST["iterations"];
                 $data[]=$_POST["prompt_id"];
 
