@@ -86,6 +86,30 @@ if(isset($_POST['getFirstData'])){
    }
 
 }
+if(isset($_POST['remove_interaction'])){
+    try
+   {
+     
+       $query="delete  from tbl_prompt_iterations where PROMPT_ID=? and prompt_iteration=?";
+       $sentence=$conection->prepare($query);
+       $data[]=$_POST["prompt_id"];
+       $data[]=$_POST["remove_interaction"];
+
+       $sentence->execute($data);
+       if($sentence->rowCount()>0){
+        echo  json_encode($sentence->fetch(PDO::FETCH_ASSOC));
+       }else{
+        echo  json_encode(["not_found"=>"Not found that client"]);
+       }
+       
+       
+   }
+   catch(PDOException $e)
+   {
+       echo "Cant execute the query. Error:".$e->getMessage();
+   }
+
+}
 if(isset($_POST['getUsers'])){
     try
    {

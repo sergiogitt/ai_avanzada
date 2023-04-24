@@ -5,8 +5,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
@@ -18,8 +18,11 @@
     <div id="blocks_container">
         <div id="block1">
             <textarea id="prompt1" oninput="inserting_into_db(1)"  rows='20' cols='70'></textarea>
-            <button type="submit" class="btn btn-primary" onclick="send_ai(1)">Send To AI</button>
-            <button type="submit" class="btn btn-primary" onclick="new_interaction()">New iteration +</button>
+            <div class="buttons">
+                <button type="submit" class="btn btn-primary" onclick="send_ai(1)">Send To AI</button>
+                <button type="submit" class="btn btn-primary" onclick="new_interaction()">New iteration +</button>
+            </div>
+           
             <p id="action1"></p>
         </div>
     </div>
@@ -159,6 +162,7 @@
         }
         function create_new_prompts_inputs(loading_old_data,element){
                 interation++;
+                
                 //Creating elemenst dinamically
                 var newDiv = document.createElement("div");
                 newDiv.setAttribute("id", "block"+number_new_block);
@@ -170,8 +174,14 @@
                 newTextarea.setAttribute("oninput",`inserting_into_db('${number_new_block}')`);
                 if(loading_old_data){
                     newTextarea.innerHTML=element.prompt_content;
+                    var remove_iteration_id=element.prompt_iteration;
+                    var remove_prompt_id=element.PROMPT_ID;
+                    var newRemoveIterationButton = document.createElement("button");
+                    newRemoveIterationButton.innerHTML = "Remove iteration -";
+                    newRemoveIterationButton.setAttribute("onclick","remove_interaction('"+remove_iteration_id+"','"+remove_prompt_id+"')");
+                    newRemoveIterationButton.setAttribute("class",`btn btn-primary`);
                 }
-                
+
                 var newButton = document.createElement("button");
                 newButton.innerHTML = "Send to AI";
                 newButton.setAttribute("onclick",`send_ai(${number_new_block})`);
@@ -183,6 +193,17 @@
                 newIterationButton.setAttribute("onclick",`new_interaction('${number_new_block}')`);
                 newIterationButton.setAttribute("type",`submit`);
                 newIterationButton.setAttribute("class",`btn btn-primary`);
+                
+               
+
+                var div_buttons=document.createElement("div");
+                div_buttons.setAttribute("class","buttons");
+                div_buttons.appendChild(newButton);
+                div_buttons.appendChild(newIterationButton);
+                if(loading_old_data){
+                    div_buttons.appendChild(newRemoveIterationButton);
+                }
+                
 
                 var newP = document.createElement("p");
                 newP.setAttribute("id", "action"+number_new_block);
@@ -190,8 +211,7 @@
                 
                 //Adding elemensts to the new div
                 newDiv.appendChild(newTextarea);
-                newDiv.appendChild(newButton);
-                newDiv.appendChild(newIterationButton);
+                newDiv.appendChild(div_buttons);
                 newDiv.appendChild(newP);
                 //Adding de new div to the body
                 let container=document.getElementById("blocks_container");
@@ -199,6 +219,17 @@
                 //Updating new values of block
                 number_actual_block++;
                 number_new_block++;
+        }
+        function remove_interaction(iteration,prompt_id){
+            $.ajax({
+                type : "POST",  
+                url  : "back.php",  
+                data : { remove_interaction : iteration, prompt_id:prompt_id},
+                success: function(res){  
+                                   
+                }
+            });
+            location.reload();
         }
         function new_interaction(){
             if(document.getElementById("prompt"+number_actual_block).value!=""){

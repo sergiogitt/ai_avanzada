@@ -59,15 +59,15 @@
             }
         });
     }
-    function confirm_editing(user_id,name){
+    function confirm_editing(user_id){
         console.log(user_id+name)
+        let new_name_input=document.getElementById("new_name").value;
         $.ajax({
                 type : "POST",  
                 url  : "back.php",  
-                data : { edit_user:user_id,new_name:name},
+                data : { edit_user:user_id,new_name:new_name_input},
                 success: function(res){  
-                   
-                    //location.reload();
+                    location.reload();
                 }
             });
     }
@@ -77,18 +77,17 @@
         document.getElementById("name_user_"+user_id).innerHTML="<a href='index.php?user_id="+user_id+"'>"+name+"</a>";
     }
     function edit_user(user_id,value){
-        console.log("action_button_"+user_id)
+        console.log(name_editing_user);
         if(editing_user.length>0){
             document.getElementById("name_user_"+editing_user[0]).innerHTML="<a href='index.php?user_id="+editing_user[0]+"'>"+name_editing_user+"</a>";
-            document.getElementById("action_button_"+editing_user[0]).innerHTML="<button  class='button_link' onClick=\"edit_user('" +editing_user[0] + "','"+name_editing_user+"')\">Edit</button>";
+            document.getElementById("action_button_"+editing_user[0]).innerHTML="<button  class='button_link' onClick=\"edit_user('" +editing_user[0]+ "','"+name_editing_user+"')\">Edit</button>";
             editing_user=[];
             name_editing_user="";
         }
         document.getElementById("action_button_"+user_id).innerHTML="<button onClick=\"cancel_editing('" +user_id + "','"+value+"')\">Cancel</button><button onClick=\"confirm_editing('" +user_id + "','"+value+"')\">Confirm</button>";
-
         editing_user.push(user_id);
         name_editing_user=value;
-        document.getElementById("name_user_"+user_id).innerHTML="<input type='text' value="+value+">";
+        document.getElementById("name_user_"+user_id).innerHTML="<input type='text' id='new_name' value="+value+">";
     }
     function create_user_form(){
         var newDiv = document.createElement("div");

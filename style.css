@@ -9,3 +9,9 @@ div#flex_container{
 #flex_container>div:last-child{
     width:  30%;
 }
+.buttons{
+    background-color: red;
+}
+body{
+    background-color: yellow;
+}
