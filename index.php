@@ -76,6 +76,10 @@
                 });
             
         }
+        function containsURL(str) {
+            const regex = /(http(s)?:\/\/)?([\w-]+\.)+[\w-]+(\/[\w- ;,./?%&=]*)?/gi;
+            return str.match(regex);
+        }
         function send_ai(number){
             //ID of elements
             console.log(number);
@@ -85,6 +89,23 @@
             let buttons_to_disable=document.getElementsByTagName('button');
             
             if(document.getElementById(prompt1).value!=""){
+                console.log("Tiene url:"+containsURL(document.getElementById(prompt1).value));
+                let url_found=containsURL(document.getElementById(prompt1).value);
+                if(url_found!=null){
+                    
+                    fetch('apis.php', {
+                        method: 'POST',
+                        body: JSON.stringify({ functionName: 'getScrape', args: url_found }),
+                        })
+                        .then(response => response.text())
+                        .then(data => {
+                            console.log(data)
+                        }
+                        )
+                        .catch(error => console.error(error)
+                    );
+
+                }
                 document.getElementById("loading").setAttribute('class',"spinner-border");
                 //Control if there is something on the textarea
                 document.getElementById(prompt1).setAttribute('disabled', true);
@@ -149,7 +170,7 @@
                             }                      
                         }
                     });
-                control_insertion_prompts[number]=false;
+                    control_insertion_prompts[number]=false;
                     }
                     document.getElementById(next_prompt).value=document.getElementById(next_prompt).value+"\nAPI RESPONE: "+content;
                 })
