@@ -135,7 +135,7 @@
                                 prompt_content=prompt_content.replace(element,response[i]);
                                 i++
                             });
-                            
+                            console.log(prompt_content)
                             
                         }
                         ).then( response=>{

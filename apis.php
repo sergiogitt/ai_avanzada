@@ -107,6 +107,16 @@ function getScrape($urls) {
         $newString = preg_replace($pattern, '', $content);
         $pattern = '/<style\b[^>]*>(.*?)<\/style>/s';
         $newString = preg_replace($pattern, '', $newString);
+        $newString = preg_replace('/<(\w+)[^>]*>/', '<$1>', $newString);       /*
+       
+        $pattern = '/ class\s*=\s*("[^"]*"|\'[^\']*\')/i';
+        $newString = preg_replace($pattern, '', $newString);
+        $pattern = '/ id\s*=\s*("[^"]*"|\'[^\']*\')/i';
+        $newString = preg_replace($pattern, '', $newString);
+        $pattern = '/ style\s*=\s*("[^"]*"|\'[^\']*\')/i';
+        $newString = preg_replace($pattern, '', $newString);
+        $pattern = '/ data-settings\s*=\s*("[^"]*"|\'[^\']*\')/i';
+        $newString = preg_replace($pattern, '', $newString);*/
         $html = getClean($newString);
         $conten[]=$html;
     }
