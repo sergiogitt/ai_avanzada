@@ -77,7 +77,7 @@
             
         }
         function containsURL(str) {
-            const regex = /(http(s)?:\/\/)?([\w-]+\.)+[\w-]+(\/[\w- ;,./?%&=]*)?/gi;
+            const regex = /(((https?:\/\/)|(www\.))[^\s]+)/g;
             return str.match(regex);
         }
         function send_ai(number){
@@ -89,22 +89,27 @@
             let buttons_to_disable=document.getElementsByTagName('button');
             
             if(document.getElementById(prompt1).value!=""){
-                console.log("Tiene url:"+containsURL(document.getElementById(prompt1).value));
-                let url_found=containsURL(document.getElementById(prompt1).value);
-                if(url_found!=null){
-                    
-                    fetch('apis.php', {
+                
+                let prompt_content=document.getElementById(prompt1).value;
+                let urls_found=containsURL(document.getElementById(prompt1).value);
+                if(urls_found.length>0){
+                    urls_found.forEach(element => {
+                        fetch('apis.php', {
                         method: 'POST',
-                        body: JSON.stringify({ functionName: 'getScrape', args: url_found }),
+                        body: JSON.stringify({ functionName: 'getScrape', args: element }),
                         })
                         .then(response => response.text())
                         .then(data => {
-                            console.log(data)
+                            //console.log(data)
+                            console.log(prompt_content.replace(element,"prueba1"));
+                            prompt_content=prompt_content.replace(element,"prueba1");
                         }
                         )
                         .catch(error => console.error(error)
                     );
 
+                    });
+                    
                 }
                 document.getElementById("loading").setAttribute('class',"spinner-border");
                 //Control if there is something on the textarea
