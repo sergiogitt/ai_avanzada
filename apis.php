@@ -5,7 +5,7 @@ $args = $data['args'];
 
 if (function_exists($functionName)) {
   $result = call_user_func_array($functionName, $args);
-  echo $result;
+  echo json_encode($result);
 } else {
   echo 'Function not found.';
 }
@@ -98,15 +98,19 @@ function getDatabase($results) {
 
 #i want to scrape the contents of a url and put it into a variable
 #return the variable to the calling function
-function getScrape($url) {
-    $content=file_get_contents($url);
-    $pattern = '/<script\b[^>]*>(.*?)<\/script>/s';
-    $newString = preg_replace($pattern, '', $content);
-    $pattern = '/<style\b[^>]*>(.*?)<\/style>/s';
-    $newString = preg_replace($pattern, '', $newString);
-
-    $html = getClean($newString);
-    return $html;
+function getScrape($urls) {
+    $conten=[];
+    foreach ($urls as $key) {
+        # code...
+        $content=file_get_contents($key);
+        $pattern = '/<script\b[^>]*>(.*?)<\/script>/s';
+        $newString = preg_replace($pattern, '', $content);
+        $pattern = '/<style\b[^>]*>(.*?)<\/style>/s';
+        $newString = preg_replace($pattern, '', $newString);
+        $html = getClean($newString);
+        $conten[]=$html;
+    }
+    return $conten;
 }
 
 #remove all opening and closing html tags from a variable except h,p,span,div,table,ul,ol,li
@@ -114,7 +118,8 @@ function getScrape($url) {
 function getClean($html) {
     $clean_text = strip_tags($html,'<h1><h2><h3><h4><h5><h6><p><span><div><table><ul><ol><li>');
     //$clean_text = strip_tags($clean_text, '<h1><h2><h3><h4><h5><h6><p><span><div><table><ul><ol><li>');
-    
+    $clean_text=str_replace("\n",'',$clean_text);
+    $clean_text=str_replace("\t",'',$clean_text);
     return $clean_text;
 }
 

@@ -87,27 +87,6 @@
             let buttons_to_disable=document.getElementsByTagName('button');
             let prompt_content=document.getElementById(prompt1).value;
             if(prompt_content!=""){
-                let urls_found=containsURL(prompt_content);
-                console.log(urls_found)
-                if(urls_found.length>0){
-                    urls_found.forEach(element => {
-                        console.log(element)
-                        fetch('apis.php', {
-                        method: 'POST',
-                        body: JSON.stringify({ functionName: 'getScrape', args: [element] }),
-                        })
-                        .then(response => response.text())
-                        .then(data => {
-                            console.log(data)
-                            prompt_content=prompt_content.replace(element,data);
-                        }
-                        )
-                        .catch(error => console.error(error)
-                    );
-
-                    });
-                    
-                }
                 document.getElementById("loading").setAttribute('class',"spinner-border");
                 //Control if there is something on the textarea
                 document.getElementById(prompt1).setAttribute('disabled', true);
@@ -125,7 +104,7 @@
                 const n = 1;
 
                 // Objeto de opciones para la solicitud
-                const options = {
+                let options = {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -139,44 +118,126 @@
                 })
                 };
 
-                // Hacer la solicitud a la API
-                fetch(API_ENDPOINT, options)
-                .then(response => response.json())
-                .then(data =>{ 
-                    let content=data.choices[0].message.content;
-                    console.log(content)
-                    var newP = document.getElementById("response_ai");
-                    newP.innerHTML=content;
-                    document.getElementById("loading").removeAttribute('class');
-                    for (let i = 0; i < buttons_to_disable.length; i++) {
-                        buttons_to_disable[i].removeAttribute('disabled');
-                    }
-                    document.getElementById(prompt1).removeAttribute('disabled');
-                    document.getElementById("response").appendChild(newP);
-                    let num=number;
-                    num++;
+                let urls_found=containsURL(prompt_content);
+                console.log(urls_found)
+                if(urls_found!=null){
                     
-                    let next_prompt="prompt"+(num);
-
-                    console.log("Next prompt"+next_prompt);
-                    console.log("Next number"+num);
-                    if(document.getElementById(next_prompt)==null){
-                        create_new_prompts_inputs(false);
-                        $.ajax({
-                        type : "POST",  
-                        url  : "back.php",  
-                        data : { prompt : content ,attempt:interation,customer_id:1,iterations:num,id_prompt:ids_prompts[1]},
-                        success: function(res){  
-                            if(interation==0){
-                                ids_prompts[number]=res;
-                            }                      
+                       
+                        fetch('apis.php', {
+                        method: 'POST',
+                        body: JSON.stringify({ functionName: 'getScrape', args: [urls_found] }),
+                        })
+                        .then(response => response.text())
+                        .then(data => {
+                            let response=JSON.parse(data) 
+                            let i=0;
+                            urls_found.forEach(element => {
+                                prompt_content=prompt_content.replace(element,response[i]);
+                                i++
+                            });
+                            
+                            
                         }
-                    });
-                    control_insertion_prompts[number]=false;
-                    }
-                    document.getElementById(next_prompt).value=document.getElementById(next_prompt).value+"\nAPI RESPONE: "+content;
+                        ).then( response=>{
+                            
+                            let options = {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "application/json",
+                                    "Authorization": "Bearer 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"
+                                },
+                                body: JSON.stringify({
+                                    
+                                    "model": "gpt-3.5-turbo",
+                                    "messages": [{"role": "user", "content":prompt_content}],
+                                    "temperature": 0.7
+                                })
+                            };
+                            fetch(API_ENDPOINT, options)
+                            .then(response => response.json())
+                            .then(data =>{ 
+                                let content=data.choices[0].message.content;
+                                console.log(content)
+                                var newP = document.getElementById("response_ai");
+                                newP.innerHTML=content;
+                                document.getElementById("loading").removeAttribute('class');
+                                for (let i = 0; i < buttons_to_disable.length; i++) {
+                                    buttons_to_disable[i].removeAttribute('disabled');
+                                }
+                                document.getElementById(prompt1).removeAttribute('disabled');
+                                document.getElementById("response").appendChild(newP);
+                                let num=number;
+                                num++;
+                                
+                                let next_prompt="prompt"+(num);
+
+                                console.log("Next prompt"+next_prompt);
+                                console.log("Next number"+num);
+                                if(document.getElementById(next_prompt)==null){
+                                    create_new_prompts_inputs(false);
+                                    $.ajax({
+                                    type : "POST",  
+                                    url  : "back.php",  
+                                    data : { prompt : content ,attempt:interation,customer_id:1,iterations:num,id_prompt:ids_prompts[1]},
+                                    success: function(res){  
+                                        if(interation==0){
+                                            ids_prompts[number]=res;
+                                        }                      
+                                    }
+                                });
+                                control_insertion_prompts[number]=false;
+                                }
+                                document.getElementById(next_prompt).value=document.getElementById(next_prompt).value+"\nAPI RESPONE: "+content;
+                            })
+                            .catch(error => console.error(error));
                 })
-                .catch(error => console.error(error));
+                        .catch(error => console.error(error)
+                    );
+
+                    
+                    
+                }else{
+                    fetch(API_ENDPOINT, options)
+                    .then(response => response.json())
+                    .then(data =>{ 
+                        let content=data.choices[0].message.content;
+                        console.log(content)
+                        var newP = document.getElementById("response_ai");
+                        newP.innerHTML=content;
+                        document.getElementById("loading").removeAttribute('class');
+                        for (let i = 0; i < buttons_to_disable.length; i++) {
+                            buttons_to_disable[i].removeAttribute('disabled');
+                        }
+                        document.getElementById(prompt1).removeAttribute('disabled');
+                        document.getElementById("response").appendChild(newP);
+                        let num=number;
+                        num++;
+                        
+                        let next_prompt="prompt"+(num);
+
+                        console.log("Next prompt"+next_prompt);
+                        console.log("Next number"+num);
+                        if(document.getElementById(next_prompt)==null){
+                            create_new_prompts_inputs(false);
+                            $.ajax({
+                            type : "POST",  
+                            url  : "back.php",  
+                            data : { prompt : content ,attempt:interation,customer_id:1,iterations:num,id_prompt:ids_prompts[1]},
+                            success: function(res){  
+                                if(interation==0){
+                                    ids_prompts[number]=res;
+                                }                      
+                            }
+                        });
+                        control_insertion_prompts[number]=false;
+                        }
+                        document.getElementById(next_prompt).value=document.getElementById(next_prompt).value+"\nAPI RESPONE: "+content;
+                    })
+                    .catch(error => console.error(error));
+                }
+                
+                // Hacer la solicitud a la API
+                
 
             }else{
                 document.getElementById(action).innerHTML ="Please type something";
