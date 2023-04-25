@@ -99,14 +99,20 @@ function getDatabase($results) {
 #i want to scrape the contents of a url and put it into a variable
 #return the variable to the calling function
 function getScrape($url) {
-    $html = getClean(file_get_contents($url));
+    $content=file_get_contents($url);
+    $pattern = '/<script\b[^>]*>(.*?)<\/script>/s';
+    $newString = preg_replace($pattern, '', $content);
+    $pattern = '/<style\b[^>]*>(.*?)<\/style>/s';
+    $newString = preg_replace($pattern, '', $newString);
+
+    $html = getClean($newString);
     return $html;
 }
 
 #remove all opening and closing html tags from a variable except h,p,span,div,table,ul,ol,li
 #return the variable to the calling function
 function getClean($html) {
-    $clean_text = htmlspecialchars(strip_tags($html,'<h1><h2><h3><h4><h5><h6><p><span><div><table><ul><ol><li>'));
+    $clean_text = strip_tags($html,'<h1><h2><h3><h4><h5><h6><p><span><div><table><ul><ol><li>');
     //$clean_text = strip_tags($clean_text, '<h1><h2><h3><h4><h5><h6><p><span><div><table><ul><ol><li>');
     
     return $clean_text;

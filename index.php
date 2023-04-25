@@ -82,27 +82,24 @@
         }
         function send_ai(number){
             //ID of elements
-            console.log(number);
-            
             let prompt1="prompt"+number;
             let action="action"+number;
             let buttons_to_disable=document.getElementsByTagName('button');
-            
-            if(document.getElementById(prompt1).value!=""){
-                
-                let prompt_content=document.getElementById(prompt1).value;
-                let urls_found=containsURL(document.getElementById(prompt1).value);
+            let prompt_content=document.getElementById(prompt1).value;
+            if(prompt_content!=""){
+                let urls_found=containsURL(prompt_content);
+                console.log(urls_found)
                 if(urls_found.length>0){
                     urls_found.forEach(element => {
+                        console.log(element)
                         fetch('apis.php', {
                         method: 'POST',
-                        body: JSON.stringify({ functionName: 'getScrape', args: element }),
+                        body: JSON.stringify({ functionName: 'getScrape', args: [element] }),
                         })
                         .then(response => response.text())
                         .then(data => {
-                            //console.log(data)
-                            console.log(prompt_content.replace(element,"prueba1"));
-                            prompt_content=prompt_content.replace(element,"prueba1");
+                            console.log(data)
+                            prompt_content=prompt_content.replace(element,data);
                         }
                         )
                         .catch(error => console.error(error)
