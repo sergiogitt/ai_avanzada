@@ -66,6 +66,38 @@ if (isset($_POST['prompt'])) {
     }
    
 }
+if(isset($_POST['new_companie'])){
+    try
+   {
+        $query="select * from tbl_url where id_url=?";
+        $sentence=$conection->prepare($query);
+        $data[]=$_POST["new_companie"];
+        $sentence->execute($data);
+        if($sentence->rowCount()==0){
+            $description=$_POST["description1"];
+            if($description!=$_POST["description2"]){
+                $description.=$_POST["description2"];
+            }
+            $query="insert into tbl_url (id_url,description,tags,name) values (?,?,?,?)";
+            $sentence=$conection->prepare($query);
+            $data[]=$description;
+            $data[]=$_POST["tags"];
+            $data[]=$_POST["name"];
+            $sentence->execute($data);
+        }else{
+        echo  ["already_registeres"=>"Url registeres on DB"];
+        }
+      
+      
+       
+       
+   }
+   catch(PDOException $e)
+   {
+       echo "Cant execute the query. Error:".$e->getMessage();
+   }
+
+}
 if(isset($_POST['getFirstData'])){
     try
    {

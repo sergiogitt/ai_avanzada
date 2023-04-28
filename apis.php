@@ -114,6 +114,66 @@ function getScrape($urls) {
     }
     return $conten;
 }
+function getCompany($url){
+    $companies=[];
+    foreach ($url as $key) {
+        $html = file_get_contents($key);
+       
+        $aux=[];
+        $matches=[];
+        // Find the position of the meta description tag in the HTML code
+        $pos = strpos($html, '<meta name="description"');
+        // Extract the meta description from the HTML code
+        $desc = substr($html, $pos);
+        // Use regular expressions to extract the content of the meta description
+        preg_match('/<meta name="description" content="([^"]*)"/i', $desc, $matches);
+        if(isset($matches[1])){
+            $aux[]=$matches[1];
+        }else{
+            $aux[]="undefined";
+        }
+        $matches=[];
+        $pos = strpos($html, '<meta property="og:description"');
+        // Extract the meta description from the HTML code
+        $desc = substr($html, $pos);
+        // Use regular expressions to extract the content of the meta description
+        preg_match('/<meta property="og:description" content="([^"]*)"/i', $desc, $matches);
+        if(isset($matches[1])){
+            $aux[]=$matches[1];
+        }else{
+            $aux[]="undefined";
+        }
+
+        $matches=[];
+        $pos = strpos($html, '<meta name="keywords"');
+        // Extract the meta description from the HTML code
+        $desc = substr($html, $pos);
+        // Use regular expressions to extract the content of the meta description
+        preg_match('/<meta name="keywords" content="([^"]*)"/i', $desc, $matches);
+        if(isset($matches[1])){
+            $aux[]=$matches[1];
+        }else{
+            $aux[]="undefined";
+        }
+        $matches=[];
+        $pos = strpos($html, '<title>');
+        // Extract the meta description from the HTML code
+        $desc = substr($html, $pos);
+        // Use regular expressions to extract the content of the meta description
+        preg_match('/<title>(.*?)<\/title>/i', $desc, $matches);
+        if(isset($matches[1])){
+            $aux[]=$matches[1];
+        }else{
+            $aux[]="undefined";
+        }
+        $companies[]=$aux;
+       
+    }
+    
+    return $companies;
+   
+}
+
 
 #remove all opening and closing html tags from a variable except h,p,span,div,table,ul,ol,li
 #return the variable to the calling function

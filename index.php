@@ -120,9 +120,48 @@
 
                 let urls_found=containsURL(prompt_content);
                 console.log(urls_found)
+                let companies_found=[];
                 if(urls_found!=null){
                     
-                       
+                    fetch('apis.php', {
+                        method: 'POST',
+                        body: JSON.stringify({ functionName: 'getCompany', args: [urls_found] }),
+                        })
+                        .then(response => response.text())
+                        .then(data => {
+                            let response=JSON.parse(data) 
+                            let i=0;
+                           
+                            urls_found.forEach(element => {
+                                companies_found[i]=response[i];
+                                i++;
+                            });
+                            
+                            
+                        }
+                        ).then( data=>{
+                            console.log(companies_found)
+                            
+                            for(let i=0;i<urls_found.length;i++){
+                                console.log(urls_found[i])
+                                $.ajax({
+                                    type : "POST",  //title in name and keywords in tags
+                                    url  : "back.php",  
+                                    data : { new_companie : urls_found[i],
+                                         description1:companies_found[i][0],
+                                         description2:companies_found[i][1],
+                                         name:companies_found[i][3],
+                                         tags:companies_found[i][2]},
+                                    success: function(res){  
+                                                    
+                                    }
+                                });
+                            }
+                           
+                        })
+                        .catch(error => console.error(error));
+                        
+                            
                         fetch('apis.php', {
                         method: 'POST',
                         body: JSON.stringify({ functionName: 'getScrape', args: [urls_found] }),
