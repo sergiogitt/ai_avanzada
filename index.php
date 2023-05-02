@@ -13,7 +13,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
 </head>
-<body onload="get_actual_data_user(1)">
+<body onload="get_actual_data_user(2)">
 <div id="flex_container">
     <div id="blocks_container">
         <div id="block1">
@@ -35,6 +35,7 @@
 </div>
 </body>
 <script>
+     const CUSTOMER_ID=2;
         let number_actual_block=1;
         let number_new_block=number_actual_block+1;
         let ids_prompts=[];
@@ -43,48 +44,46 @@
         control_insertion_prompts[1]=true;
         let ini=0;
         let getting_info=false;
+        let companies_found=[];
+        let buttons_to_disable=document.getElementsByTagName('button');
         function get_actual_data_user(user_id){
-            $.ajax({
-                    type : "POST",  
-                    url  : "back.php",  
-                    data : { customer_id:user_id,getFirstData:true},
-                    success: function(res){   
-                        let answer=JSON.parse(res);
-                        if(answer.not_found!="Not found that client"){
-                            control_insertion_prompts[1]=false;
-                            getting_info=true;
-                            ids_prompts[1]=answer.PROMPT_ID;
-                            document.getElementById("prompt1").value=answer.prompt;
-                            $.ajax({
-                            type : "POST",  
-                            url  : "back.php",  
-                            data : { customer_id:user_id,getSecondData:true,prompt_id:ids_prompts[1]},
-                            success: function(res2){  
-                                let data=JSON.parse(res2);
-                                data.forEach(element => {
-                                    create_new_prompts_inputs(true,element);
-                                    //Adding new element to the array which contorls the insertions or updates of the prompts
-                                    control_insertion_prompts[number_actual_block]=false;
-                                });
-                                
-                                
-                                }
-                            });
-                        }
-                    
-                    }
+            api_call("back.php",JSON.stringify({functionName: 'getFirstData', args: [CUSTOMER_ID]}),{},fill_first_field_with_data,null);
+        }
+        function fill_first_field_with_data(answer){
+            if(answer.not_found!="Not found that client"){
+                control_insertion_prompts[1]=false;
+                getting_info=true;
+                ids_prompts[1]=answer.PROMPT_ID;
+                console.log(ids_prompts)
+                document.getElementById("prompt1").value=answer.prompt;
+                api_call("back.php",JSON.stringify({functionName: 'getSecondData', args: [ids_prompts[1]]}),{},fill_all_info);
+               
+            }
+        }
+        function fill_all_info(data){
+            data.forEach(element => {
+                    create_new_prompts_inputs(true,element);
+                    //Adding new element to the array which contorls the insertions or updates of the prompts
+                    control_insertion_prompts[number_actual_block]=false;
                 });
-            
         }
         function containsURL(str) {
             const regex = /(((https?:\/\/)|(www\.))[^\s]+)/g;
             return str.match(regex);
         }
+        function name_company(response){
+            let i=0;
+                           
+            urls_found.forEach(element => {
+                companies_found[i]=response[i];
+                i++;
+            });
+        }
         function send_ai(number){
             //ID of elements
             let prompt1="prompt"+number;
             let action="action"+number;
-            let buttons_to_disable=document.getElementsByTagName('button');
+            
             let prompt_content=document.getElementById(prompt1).value;
             if(prompt_content!=""){
                 document.getElementById("loading").setAttribute('class',"spinner-border");
@@ -119,8 +118,7 @@
                 };
 
                 let urls_found=containsURL(prompt_content);
-                console.log(urls_found)
-                let companies_found=[];
+                let header={ "Content-Type": "application/json","Authorization": "Bearer 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"};
                 if(urls_found!=null){
                     
                     fetch('apis.php', {
@@ -214,6 +212,8 @@
                                 console.log("Next number"+num);
                                 if(document.getElementById(next_prompt)==null){
                                     create_new_prompts_inputs(false);
+                                    //api_call("back.php", JSON.stringify({functionName: 'insertNewInitialPrompt', args: [input ,interation,1]}),null,test,number)
+                                    
                                     $.ajax({
                                     type : "POST",  
                                     url  : "back.php",  
@@ -224,55 +224,26 @@
                                         }                      
                                     }
                                 });
+
                                 control_insertion_prompts[number]=false;
                                 }
                                 document.getElementById(next_prompt).value=document.getElementById(next_prompt).value+"\nAPI RESPONE: "+content;
                             })
                             .catch(error => console.error(error));
-                })
+                    })
                         .catch(error => console.error(error)
                     );
 
                     
                     
                 }else{
-                    fetch(API_ENDPOINT, options)
-                    .then(response => response.json())
-                    .then(data =>{ 
-                        let content=data.choices[0].message.content;
-                        console.log(content)
-                        var newP = document.getElementById("response_ai");
-                        newP.innerHTML=content;
-                        document.getElementById("loading").removeAttribute('class');
-                        for (let i = 0; i < buttons_to_disable.length; i++) {
-                            buttons_to_disable[i].removeAttribute('disabled');
-                        }
-                        document.getElementById(prompt1).removeAttribute('disabled');
-                        document.getElementById("response").appendChild(newP);
-                        let num=number;
-                        num++;
-                        
-                        let next_prompt="prompt"+(num);
-
-                        console.log("Next prompt"+next_prompt);
-                        console.log("Next number"+num);
-                        if(document.getElementById(next_prompt)==null){
-                            create_new_prompts_inputs(false);
-                            $.ajax({
-                            type : "POST",  
-                            url  : "back.php",  
-                            data : { prompt : content ,attempt:interation,customer_id:1,iterations:num,id_prompt:ids_prompts[1]},
-                            success: function(res){  
-                                if(interation==0){
-                                    ids_prompts[number]=res;
-                                }                      
-                            }
-                        });
-                        control_insertion_prompts[number]=false;
-                        }
-                        document.getElementById(next_prompt).value=document.getElementById(next_prompt).value+"\nAPI RESPONE: "+content;
-                    })
-                    .catch(error => console.error(error));
+                    
+                    api_call(API_ENDPOINT, JSON.stringify({
+                        "model": "gpt-3.5-turbo",
+                        "messages": [{"role": "user", "content": prompt_content}],
+                        "temperature": 0.7
+                    }), header, disable_actions_on_call,number);
+                    
                 }
                 
                 // Hacer la solicitud a la API
@@ -282,6 +253,47 @@
                 document.getElementById(action).innerHTML ="Please type something";
             }
             
+        }
+        function api_call(url,body_content,header_content,todo=null,args){
+            fetch(url, {
+            headers:header_content,
+            method: 'POST',
+            body:body_content,
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(todo){
+                    todo(data,args);
+                }
+               
+            }
+            )
+            .catch(error => console.error(error));
+        }
+        
+        function disable_actions_on_call(data,number){
+            let prompt1="prompt"+number;
+            let content=data.choices[0].message.content;
+            console.log(content)
+            var newP = document.getElementById("response_ai");
+            newP.innerHTML=content;
+            document.getElementById("loading").removeAttribute('class');
+            for (let i = 0; i < buttons_to_disable.length; i++) {
+                buttons_to_disable[i].removeAttribute('disabled');
+            }
+            document.getElementById(prompt1).removeAttribute('disabled');
+            document.getElementById("response").appendChild(newP);
+            let num=number;
+            num++;
+            let next_prompt="prompt"+(num);
+            console.log("Next prompt"+next_prompt);
+            console.log("Next number"+num);
+            if(document.getElementById(next_prompt)==null){
+                create_new_prompts_inputs(false);
+                api_call("back.php", JSON.stringify({functionName: 'insertNewIterationPrompt', args: [ ids_prompts[CUSTOMER_ID] ,num,content]},{}))
+                control_insertion_prompts[number]=false;
+            }
+            document.getElementById(next_prompt).value=document.getElementById(next_prompt).value+"\nAPI RESPONE: "+content;
         }
         function create_new_prompts_inputs(loading_old_data,element){
                 interation++;
@@ -364,6 +376,12 @@
                 document.getElementById(name_last_action).innerHTML ="Please type something before adding other iteration";
             }
         }
+        function test(res,number){
+            if(interation==0){
+                ids_prompts[number]=res;
+            }
+        }
+        
         
         function inserting_into_db(number) {
             //ID of elements
@@ -371,33 +389,27 @@
             let action="action"+number;
             var input = document.getElementById(prompt).value;    
             if(control_insertion_prompts[number]){
-                //New insertion of the data
-                $.ajax({
-                        type : "POST",  
-                        url  : "back.php",  
-                        data : { prompt : input ,attempt:interation,customer_id:1,iterations:number,id_prompt:ids_prompts[1]},
-                        success: function(res){  
-                            if(interation==0){
-                                ids_prompts[number]=res;
-                            }                      
-                        }
-                    });
+                //New insertion of the data url,body_content,todo,args
+                console.log(ids_prompts[number])
+                if(interation==0){
+                    api_call("back.php", JSON.stringify({functionName: 'insertNewInitialPrompt', args: [input ,interation,CUSTOMER_ID]}),{},test,number)
+                    console.log(ids_prompts[number])
+                }else{
+                    console.log(ids_prompts[number])
+                    api_call("back.php", JSON.stringify({functionName: 'insertNewIterationPrompt', args: [ ids_prompts[1],number,input,CUSTOMER_ID]}),{})
+                }
+                
+                
                 control_insertion_prompts[number]=false;
             }else{
                 //Nupdte of the current prompt
                 if(number==1){
                     ini=1;
+                    api_call("back.php", JSON.stringify({functionName: 'updateInitialPrompt', args: [input ,ids_prompts[1]]}),{})
                 }else{
                     ini=0;
+                    api_call("back.php", JSON.stringify({functionName: 'updateIterationPrompt', args: [input ,number,ids_prompts[1]]}),{})
                 }
-                console.log(ids_prompts[1]);
-                $.ajax({
-                        type : "POST", 
-                        url  : "back.php",  
-                        data : { prompt : input,prompt_id:ids_prompts[1],customer_id:1,iterations:number,initial:ini},
-                        success: function(res){ 
-                        }
-                    });
             }
         }
     </script>
