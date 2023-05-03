@@ -43,18 +43,19 @@ function insertNewIterationPrompt($id_prompt,$iteration,$prompt){
     try
     {
         $conection=start_conection();
-        $query="insert into tbl_prompt_iterations (PROMPT_ID, prompt_iteration, prompt_content,customer_ID) values (?,?,?,?)";
+        $query="insert into tbl_prompt_iterations (PROMPT_ID, prompt_iteration, prompt_content) values (?,?,?)";
         $sentence=$conection->prepare($query);
         $data[]=$id_prompt;
         $data[]=$iteration;
         $data[]=$prompt;
+       
         $sentence->execute($data);
 
         echo $conection->lastInsertId();
     }
     catch(PDOException $e)
     {     
-        echo "Cant execute the query. Error:".$e->getMessage();
+        echo "Cant execute the querys. Error:".$e->getMessage();
     }
 }
 function updateInitialPrompt($prompt,$prompt_id){
@@ -195,27 +196,28 @@ if (isset($_POST['prompt'])) {
     }
    
 }
-if(isset($_POST['new_companie'])){
+function get_company($new_companie ,$description1,$description2,$name,$tags){
     try
    {
-        $query="select * from tbl_url where id_url=?";
-        $sentence=$conection->prepare($query);
-        $data[]=$_POST["new_companie"];
-        $sentence->execute($data);
-        if($sentence->rowCount()==0){
-            $description=$_POST["description1"];
-            if($description!=$_POST["description2"]){
-                $description.=$_POST["description2"];
-            }
-            $query="insert into tbl_url (id_url,description,tags,name) values (?,?,?,?)";
-            $sentence=$conection->prepare($query);
-            $data[]=$description;
-            $data[]=$_POST["tags"];
-            $data[]=$_POST["name"];
-            $sentence->execute($data);
-        }else{
-        echo  ["already_registeres"=>"Url registeres on DB"];
+    $conection=start_conection();
+    $query="select * from tbl_url where id_url=?";
+    $sentence=$conection->prepare($query);
+    $data[]=$new_companie;
+    $sentence->execute($data);
+    if($sentence->rowCount()==0){
+        $description=$description1;
+        if($description!=$description2){
+            $description.=$description2;
         }
+        $query="insert into tbl_url (id_url,description,tags,name) values (?,?,?,?)";
+        $sentence=$conection->prepare($query);
+        $data[]=$description;
+        $data[]=$tags;
+        $data[]=$name;
+        $sentence->execute($data);
+    }else{
+        echo json_encode(["already_registeres"=>"Url registeres on DB"]);
+    }
       
       
        

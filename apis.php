@@ -2,7 +2,7 @@
 $data = json_decode(file_get_contents('php://input'), true);
 $functionName = $data['functionName'];
 $args = $data['args'];
-var_dump($_POST);
+
 if (function_exists($functionName)) {
   $result = call_user_func_array($functionName, $args);
   echo json_encode($result);
