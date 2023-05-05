@@ -15,16 +15,19 @@
 </head>
 <body onload="get_actual_data_user(2)">
 <div id="flex_container">
-    <div id="blocks_container">
-        <div id="block1">
-            <textarea id="prompt1" oninput="inserting_into_db(1)"  rows='20' cols='70'></textarea>
-            <div class="buttons">
-                <button type="submit" class="btn btn-primary" onclick="send_ai(1)">Send To AI</button>
-                <button type="submit" class="btn btn-primary" onclick="new_interaction()">New iteration +</button>
+    <div id="blocks_container" >
+        <form action="back.php" method="post" enctype="multipart/form-data">
+            <div id="block1" >
+                <textarea id="prompt1" oninput="inserting_into_db(1)"  rows='20' cols='70'></textarea>
+                <div class="buttons">
+                    <button type="submit" class="btn btn-primary" onclick="send_ai(1):submit()">Send To AI</button>
+                    <button type="button" class="btn btn-primary" onclick="new_interaction()">New iteration +</button>
+                    <input type="file" id="file1" name="file"></input>
+                </div>
+            
+                <p id="action1"></p>
             </div>
-           
-            <p id="action1"></p>
-        </div>
+        </form>
     </div>
    
     <div id="response">
@@ -34,5 +37,7 @@
     </div>
 </div>
 </body>
-<script src="blackbox.js"></script>
+<script src="blackbox.js">    
+</script>
+
 </html>

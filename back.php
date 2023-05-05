@@ -1,6 +1,26 @@
 <?php
 require "src/bd_config.php";
-
+if(isset($_FILES["file"])){
+    try
+    {
+        var_dump($_FILES);
+        $nombreArchivo = $_FILES["file"]['name'];
+        $rutaArchivoTemp = $_FILES["file"]['tmp_name'];
+        $rutaArchivoDestino = "./uploaded_files" . '/' . $nombreArchivo;
+        
+        if (move_uploaded_file($rutaArchivoTemp, $rutaArchivoDestino)) {
+            header('Location: index.php');
+            exit;
+        } else {
+            return json_encode(["error"=>"Something went wrong on the uploady"]);;
+        }
+        echo $conection->lastInsertId();
+    }
+    catch(PDOException $e)
+    {     
+        echo "Cant execute the querys. Error:".$e->getMessage();
+    }
+}
 
 $data = json_decode(file_get_contents('php://input'), true);
 
@@ -39,6 +59,7 @@ function insertNewInitialPrompt($prompt,$iteration,$user_id){
         echo "Cant execute the query. Error:".$e->getMessage();
     }
 }
+
 function insertNewIterationPrompt($id_prompt,$iteration,$prompt){
     try
     {

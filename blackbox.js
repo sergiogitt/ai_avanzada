@@ -1,4 +1,5 @@
 
+
      const CUSTOMER_ID=2;
         let number_actual_block=1;
         let number_new_block=number_actual_block+1;
@@ -17,7 +18,7 @@
                 control_insertion_prompts[1]=false;
                 getting_info=true;
                 ids_prompts[1]=answer.PROMPT_ID;
-                console.log(ids_prompts)
+                
                 document.getElementById("prompt1").value=answer.prompt;
                 api_call("back.php",JSON.stringify({functionName: 'getSecondData', args: [ids_prompts[1]]}),{},fill_all_info);
                
@@ -42,13 +43,16 @@
                 i++;
             });
         }
+        
         function send_ai(number){
+            console.log("sending")
             //ID of elements
             let prompt_id="prompt"+number;
             let action="action"+number;
             
             let prompt_content=document.getElementById(prompt_id).value;
             if(prompt_content!=""){
+                
                 document.getElementById("loading").setAttribute('class',"spinner-border");
                 //Control if there is something on the textarea
                 document.getElementById(prompt_id).setAttribute('disabled', true);
@@ -108,20 +112,48 @@
                             }), header, disable_actions_on_call,number);
                     })
                         .catch(error => console.error(error)
-                    );          
-                }else{
+                    );  
                     
+                }else{
+                   
                     api_call(API_ENDPOINT, JSON.stringify({
                         "model": "gpt-3.5-turbo",
                         "messages": [{"role": "user", "content": prompt_content}],
                         "temperature": 0.7
                     }), header, disable_actions_on_call,number);
+
+                    
                     
                 }
+                analise_files(number);
+               
             }else{
                 document.getElementById(action).innerHTML ="Please type something";
             }
             
+        }
+        function analise_files(number){
+            let file_id="file"+number;
+            let file=document.getElementById(file_id);
+            let error_message=document.getElementById("action"+number);
+            let files_allowed=["application/pdf","text/plain","application/vnd.openxmlformats-officedocument.wordprocessingml.document"];
+            
+            if(file.files.length>0){
+                if(files_allowed.includes(file.files[0].type)){
+                    console.log("inserting file")
+                    /*const formData = new FormData();
+                    formData.append('file', file);
+                    api_call("back.php", JSON.stringify({functionName: 'save_file', args: [formData]}))*/
+                    const formData = new FormData();
+                    formData.append('file', file.files[0]);
+                    formData.append("name", "file");
+                    api_call('back.php', JSON.stringify({functionName: 'save_file', args: [formData]}), {});
+
+                }else{
+                    error_message.innerHTML="File not supported";
+                }
+                
+            }
         }
         function load_process(){
             let prompt_content=data.choices[0].message.content;
