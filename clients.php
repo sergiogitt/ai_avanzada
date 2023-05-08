@@ -110,7 +110,7 @@
             editing_user=[];
             name_editing_user="";
         }
-        document.getElementById("action_button_"+user_id).innerHTML="<button onClick=\"cancel_editing('" +user_id + "','"+value+"')\">Cancel</button><button onClick=\"confirm_delete('" +user_id +"')\">Confirm</button>";
+        document.getElementById("action_button_"+user_id).innerHTML="<button class='button_link' onClick=\"cancel_editing('" +user_id + "','"+value+"')\">Cancel</button><button class='button_link' onClick=\"confirm_delete('" +user_id +"')\">Confirm</button>";
         editing_user.push(user_id);
         name_editing_user=value;
         
@@ -123,7 +123,7 @@
             editing_user=[];
             name_editing_user="";
         }
-        document.getElementById("action_button_"+user_id).innerHTML="<button onClick=\"cancel_editing('" +user_id + "','"+value+"')\">Cancel</button><button onClick=\"confirm_editing('" +user_id + "','"+value+"')\">Confirm</button>";
+        document.getElementById("action_button_"+user_id).innerHTML="<button class='button_link' onClick=\"cancel_editing('" +user_id + "','"+value+"')\">Cancel</button><button class='button_link' onClick=\"confirm_editing('" +user_id + "','"+value+"')\">Confirm</button>";
         editing_user.push(user_id);
         name_editing_user=value;
         document.getElementById("name_user_"+user_id).innerHTML="<input type='text' id='new_name' value="+value+">";

@@ -43,10 +43,16 @@ div.user{
     flex-direction: row;
    
 }
+button.button_link{
+    color: white;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
 div.menu ul{
     display: flex;
     flex-direction: row;
-    
+        
 }
 div.menu ul li  {
    list-style: none;
