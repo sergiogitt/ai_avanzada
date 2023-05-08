@@ -12,6 +12,71 @@ div#flex_container{
 .buttons{
     background-color: red;
 }
+div.menu,div#user_wrapp{
+    width: 100%;
+    background-color: #65785F;
+    margin-bottom: 2rem;
+    
+}
+div#user_wrapp{
+    display: flex;
+    flex-direction: column;
+    padding: 1rem 2rem;
+}
+div#user_wrapp button#new_user_button{
+    align-self: flex-end;
+    
+}
+ul#list_of_users{
+    padding: 0;
+}
+ul#list_of_users li.user{
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    background-color:#849280 ;
+    padding: 0.5rem 1rem;
+    margin-bottom: 1rem;
+}
+div.user{
+    display: flex;
+    flex-direction: row;
+   
+}
+div.menu ul{
+    display: flex;
+    flex-direction: row;
+    
+}
+div.menu ul li  {
+   list-style: none;
+   
+}
+div.menu ul li a {
+    color: white;
+    cursor: pointer;
+    text-decoration: none;
+    background-color: #628956;
+    padding: 1rem 3rem;
+    display: block;
+    border-radius: 10px;
+    margin: 1rem;
+    
+ }
+ div.menu ul li a.selected {
+    background-color: #59A83D;
+ }
+ #wrapper{
+    padding: 1rem 4rem;
+    margin: 0 auto;
+    background-color: #0D2E02;
+    height: 100vh;
+    border-left: 1rem solid transparent;
+    border-right: 1rem solid transparent;
+    border-image: linear-gradient(to left, red, #11340A) 1;
+    border-image: linear-gradient(to right, #21421b, #1A1A1A) 1;
+ }
 body{
-    background-color: yellow;
+    
+    color: white;
 }

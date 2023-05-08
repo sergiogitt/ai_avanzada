@@ -23,14 +23,17 @@ if(isset($_FILES["file"])){
 }
 
 $data = json_decode(file_get_contents('php://input'), true);
+if(isset($data['functionName'])){
+    $functionName = $data['functionName'];
+    $args = $data['args'];
+    if (function_exists($functionName)) {
+        $result = call_user_func_array($functionName, $args);
+        
+    } 
+}
 
-$functionName = $data['functionName'];
-$args = $data['args'];
 
-if (function_exists($functionName)) {
-  $result = call_user_func_array($functionName, $args);
-  
-} 
+
 function start_conection(){
     try {
         $conection = new PDO("mysql:host=".SERVIDOR_BD.";dbname=".NOMBRE_BD, USUARIO_BD, CLAVE_BD, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"));
@@ -250,7 +253,29 @@ function get_company($new_companie ,$description1,$description2,$name,$tags){
    }
 
 }
+if(isset($_POST['delete_user'])){
+    try
+   {
+    $conection=start_conection();
+       $query="delete  from tbl_users where ID=?";
+       $sentence=$conection->prepare($query);
+       $data[]=$_POST["delete_user"];
 
+       $sentence->execute($data);
+       if($sentence->rowCount()>0){
+        echo  json_encode($sentence->fetch(PDO::FETCH_ASSOC));
+       }else{
+        echo  json_encode(["not_found"=>"Not found that client"]);
+       }
+       
+       
+   }
+   catch(PDOException $e)
+   {
+       echo "Cant execute the query. Error:".$e->getMessage();
+   }
+
+}
 if(isset($_POST['remove_interaction'])){
     try
    {
@@ -278,7 +303,7 @@ if(isset($_POST['remove_interaction'])){
 if(isset($_POST['getUsers'])){
     try
    {
-     
+    $conection=start_conection();
        $query="select * from tbl_users";
        $sentence=$conection->prepare($query);
        

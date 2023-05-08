@@ -14,30 +14,47 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
 </head>
 <body onload="get_actual_data_user(2)">
-<div id="flex_container">
-    <div id="blocks_container" >
-        <form action="back.php" method="post" enctype="multipart/form-data">
-            <div id="block1" >
-                <textarea id="prompt1" oninput="inserting_into_db(1)"  rows='20' cols='70'></textarea>
-                <div class="buttons">
-                    <button type="submit" class="btn btn-primary" onclick="send_ai(1):submit()">Send To AI</button>
-                    <button type="button" class="btn btn-primary" onclick="new_interaction()">New iteration +</button>
-                    <input type="file" id="file1" name="file"></input>
+<div id="wrapper">
+<h1>Auto GPT</h1>
+<?php
+    require "views/header.php";
+?>
+
+<div id="user_wrapp">
+    <div id="flex_container">
+        <div id="blocks_container" >
+            <form action="back.php" method="post" enctype="multipart/form-data">
+                <div id="block1" >
+                    <textarea id="prompt1" oninput="inserting_into_db(1)"  rows='20' cols='70'></textarea>
+                    <div class="buttons">
+                        <button type="submit" class="btn btn-primary" onclick="send_ai(1):submit()">Send To AI</button>
+                        <button type="button" class="btn btn-primary" onclick="new_interaction()">New iteration +</button>
+                        <input type="file" id="file1" name="file"></input>
+                    </div>
+                
+                    <p id="action1"></p>
                 </div>
-            
-                <p id="action1"></p>
-            </div>
-        </form>
-    </div>
-   
-    <div id="response">
-        <h3>AI response</h3>
-        <p id="response_ai"></p>
-        <div id="loading"></div>
+            </form>
+        </div>
+    
+        <div id="response">
+            <h3>AI response</h3>
+            <p id="response_ai"></p>
+            <div id="loading"></div>
+        </div>
     </div>
 </div>
 </body>
 <script src="blackbox.js">    
 </script>
-
+<script>
+     if(!localStorage.actual_view){
+        localStorage.setItem("actual_view","autogpt");
+        console.log(localStorage)
+    }else{
+        localStorage.actual_view="users";
+        console.log(document.getElementById("autogpt_menu"))
+        document.getElementById("autogpt_menu").setAttribute("class",'selected')
+    }
+</script>
 </html>
