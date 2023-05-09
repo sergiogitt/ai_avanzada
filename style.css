@@ -37,6 +37,19 @@ ul#list_of_users li.user{
     background-color:#849280 ;
     padding: 0.5rem 1rem;
     margin-bottom: 1rem;
+    margin-top: 1rem;
+    
+}
+button.new_button{
+    background-color: #628956;
+    padding: 1rem 3rem;
+    color:white;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+}
+button.shadow{
+    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
 }
 div.user{
     display: flex;
@@ -67,7 +80,7 @@ div.menu ul li a {
     display: block;
     border-radius: 10px;
     margin: 1rem;
-    
+    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
  }
  div.menu ul li a.selected {
     background-color: #59A83D;
@@ -82,7 +95,30 @@ div.menu ul li a {
     border-image: linear-gradient(to left, red, #11340A) 1;
     border-image: linear-gradient(to right, #21421b, #1A1A1A) 1;
  }
-body{
-    
+/*Login page*/
+div#login{
+    margin: 0 auto;
+    width:40%;
+    height: 40rem;
+    background-color: #65785F;
+    border-radius: 2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+ 
+}
+div#login>div{
+    margin: 0 2rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+#btn_login{
+    align-self: center;
+}
+body,html{
+    margin: 0 ;
+    padding: 0 ;
     color: white;
+    box-sizing: border-box;
 }

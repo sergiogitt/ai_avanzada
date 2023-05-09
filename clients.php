@@ -19,7 +19,7 @@
     require "views/header.php";
 ?>
     <div id="user_wrapp">
-        <button class="btn btn-primary" onClick="create_user_form()" id="new_user_button">Add new user</button>
+        <button class="new_button shadow" onClick="create_user_form()" id="new_user_button">Add new user</button>
     </div>
     
     
@@ -49,7 +49,7 @@
                 var newTable = document.createElement("ul");
                 newTable.id="list_of_users";
                
-                newTable.innerHTML="<tr><th>Id</th><th>Name</th><th>Actions</th></tr>";                
+                       
                 answer.forEach(element => {
                     var newRow = document.createElement("li");
                     newRow.setAttribute("class","user");
@@ -60,7 +60,7 @@
                     newColumn2.setAttribute("id","name_user_"+element.ID);
                     var id=document.createTextNode(element.ID);
                     link.appendChild(name);
-                    link.setAttribute("href", "index.php"+"?user_id="+element.ID);
+                    link.setAttribute("href", "autogpt.php"+"?user_id="+element.ID);
                     newColumn2.appendChild(link);
                     newRow.appendChild(newColumn2);
                     newTable.appendChild(newRow);
@@ -84,6 +84,7 @@
                 data : { edit_user:user_id,new_name:new_name_input},
                 success: function(res){  
                     location.reload();
+                    
                 }
             });
     }

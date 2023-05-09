@@ -325,7 +325,7 @@ if(isset($_POST['getUsers'])){
 if(isset($_POST['new_user'])){
     try
    {
-     
+    $conection=start_conection();
        $query="insert into tbl_users (display_name) values (?)";
                 $sentence=$conection->prepare($query);
                 $data[]=$_POST["new_user"];
