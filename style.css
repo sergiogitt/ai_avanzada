@@ -95,6 +95,59 @@ div.menu ul li a {
     border-image: linear-gradient(to left, red, #11340A) 1;
     border-image: linear-gradient(to right, #21421b, #1A1A1A) 1;
  }
+ /*AutoGPT*/
+ #iteration_bar{
+    background-color: #70816B;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    padding: 0.5rem;
+    margin-top: 1rem;
+ }
+ #chat{
+    display: flex;
+    flex-direction: row;
+    margin-top: 1rem;
+ }
+ #input-area{
+    flex: 0 50%;
+ }
+ #input_area textarea{
+    border: none;
+    background-color: #849280;
+ }
+ #action_buttons{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+ }
+ .iteration_button{
+    background-color: #628956;
+    padding: 1rem 2rem;
+    border-radius: 10px;
+    border: none;
+    color: white;
+    margin: 0.5rem 1rem;
+ }
+ #output{
+    flex: 0 60%;
+    margin-left: 4rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+ }
+ .spaced_inputs{
+    display: flex;
+    flex-direction: row;
+ }
+ .spaced_inputs *{
+    flex: 0 60%;
+ }
+ #response_ai{
+    min-height: 20rem;
+    padding: 1rem 2rem;
+    background-color: #849280;
+ }
 /*Login page*/
 div#login{
     margin: 0 auto;
@@ -119,6 +172,6 @@ div#login>div{
 body,html{
     margin: 0 ;
     padding: 0 ;
-    color: white;
+    color: white !important;
     box-sizing: border-box;
 }

@@ -1,6 +1,6 @@
 
 
-     const CUSTOMER_ID=2;
+     const CUSTOMER_ID=1;
         let number_actual_block=1;
         let number_new_block=number_actual_block+1;
         let ids_prompts=[];

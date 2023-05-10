@@ -132,7 +132,7 @@ function getFirstData($customer_id){
     if($sentence->rowCount()>0){
         echo  json_encode($sentence->fetch(PDO::FETCH_ASSOC));
     }else{
-        echo  json_encode(["not_found"=>"Not found that client"]);
+        echo  json_encode(["not_found"=>"Not found that client".$customer_id]);
     }
        
        
