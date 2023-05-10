@@ -54,13 +54,13 @@
                     var newRow = document.createElement("li");
                     newRow.setAttribute("class","user");
                     
-                    var link = document.createElement("a");
+                    var link = document.createElement("div");
                     var name=document.createTextNode(element.display_name);
                     var newColumn2 = document.createElement("div");
                     newColumn2.setAttribute("id","name_user_"+element.ID);
                     var id=document.createTextNode(element.ID);
                     link.appendChild(name);
-                    link.setAttribute("href", "autogpt.php"+"?user_id="+element.ID);
+                    link.setAttribute("onclick", `create_session('${element.ID}')`);
                     newColumn2.appendChild(link);
                     newRow.appendChild(newColumn2);
                     newTable.appendChild(newRow);
@@ -74,6 +74,11 @@
                
             }
         });
+    }
+    function create_session(id){
+        sessionStorage.setItem("auto_gpt_view_user",id);
+        console.log(sessionStorage)
+        window.location.href = 'autogpt.php';
     }
     function confirm_editing(user_id){
         console.log(user_id+name)

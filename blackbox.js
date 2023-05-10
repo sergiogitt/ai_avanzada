@@ -12,8 +12,16 @@
         let all_data_from_db=["empty"];
         let number_iteration_watching=1;
         let buttons_to_disable=document.getElementsByTagName('button');
-        function get_actual_data_user(user_id){
-            api_call("back.php",JSON.stringify({functionName: 'getFirstData', args: [CUSTOMER_ID]}),{},fill_first_field_with_data,null);
+        function get_actual_data_user(){
+            let user;
+            if(sessionStorage.auto_gpt_view_user){
+                user=sessionStorage.auto_gpt_view_user;
+            }else{
+                user=2;
+            }
+            
+            console.log(localStorage)
+            api_call("back.php",JSON.stringify({functionName: 'getFirstData', args: [user]}),{},fill_first_field_with_data,null);
         }
         function fill_first_field_with_data(answer){
             if(!answer.not_found){
