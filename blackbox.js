@@ -1,6 +1,6 @@
 
 
-     const CUSTOMER_ID=1;
+     const CUSTOMER_ID=2;
         let number_actual_block=1;
         let number_new_block=number_actual_block+1;
         let ids_prompts=[];
@@ -9,27 +9,88 @@
         control_insertion_prompts[1]=true;
         let getting_info=false;
         let companies_found=[];
+        let all_data_from_db=["empty"];
+        let number_iteration_watching=1;
         let buttons_to_disable=document.getElementsByTagName('button');
         function get_actual_data_user(user_id){
             api_call("back.php",JSON.stringify({functionName: 'getFirstData', args: [CUSTOMER_ID]}),{},fill_first_field_with_data,null);
         }
         function fill_first_field_with_data(answer){
-            if(answer.not_found!="Not found that client"){
+            if(!answer.not_found){
                 control_insertion_prompts[1]=false;
                 getting_info=true;
                 ids_prompts[1]=answer.PROMPT_ID;
                 
                 document.getElementById("prompt1").value=answer.prompt;
-                api_call("back.php",JSON.stringify({functionName: 'getSecondData', args: [ids_prompts[1]]}),{},fill_all_info);
+                all_data_from_db.push(answer.prompt)
+                console.log(all_data_from_db)
+                api_call("back.php",JSON.stringify({functionName: 'getSecondData', args: [ids_prompts[1]]}),{},create_new_iteration_button);
                
+            }else{
+                console.log("erg")
+                ids_prompts[1]="";
+                all_data_from_db.push("")
+                document.getElementById("prompt1").value="";
             }
         }
         function fill_all_info(data){
             data.forEach(element => {
-                    create_new_prompts_inputs(true,element);
+                    all_data_from_db.push(element.prompt_content)
                     //Adding new element to the array which contorls the insertions or updates of the prompts
                     control_insertion_prompts[number_actual_block]=false;
                 });
+                console.log(all_data_from_db)
+        }
+        function load_iteration_data(number){
+            let input=document.getElementById("prompt1");
+            input.value=all_data_from_db[number];
+            input.removeAttribute("oninput");
+            input.setAttribute("oninput",`inserting_into_db('${number}')`);
+            let iteration_button=document.getElementById("iteration"+number_iteration_watching);     
+            iteration_button.classList.remove("selected");
+            let new_visualization=document.getElementById("iteration"+number); 
+            new_visualization.classList.add("selected");
+            number_iteration_watching=number;
+        }
+        function create_new_iteration_button(data,create_button=false){
+            if(!create_button){
+                data.forEach(element => {
+                    var newIteration = document.createElement("button");
+                    newIteration.setAttribute("id", "iteration"+number_new_block);
+                    newIteration.setAttribute("class", "iteration_button shadow");
+                    newIteration.setAttribute("onClick", `load_iteration_data('${number_new_block}')`);
+                    var tex=document.createTextNode("ITERATION"+number_new_block)
+                    newIteration.append(tex)
+                    document.getElementById("iterations").append(newIteration);
+                    number_actual_block++;
+                    number_new_block++;
+    
+                });
+                fill_all_info(data)
+            }else{
+                let empty_field=all_data_from_db.findIndex(e=>e=='');
+                console.log(all_data_from_db)
+                console.log(empty_field)
+                if(empty_field==-1){
+                    var newIteration = document.createElement("button");
+                    newIteration.setAttribute("id", "iteration"+number_new_block);
+                    newIteration.setAttribute("class", "iteration_button shadow");
+                    newIteration.setAttribute("onClick", `load_iteration_data('${number_new_block}')`);
+                    var tex=document.createTextNode("ITERATION"+number_new_block)
+                    newIteration.append(tex)
+                    document.getElementById("iterations").append(newIteration);
+                    all_data_from_db.push("");
+                    control_insertion_prompts[number_new_block]=true;
+                    number_actual_block++;
+                    number_new_block++;
+                }else{
+                    document.getElementById("error_message").innerHTML ="Please type something on the iteration number "+empty_field+" before adding other iteration";
+
+                }
+               
+            }
+            
+            
         }
         function containsURL(str) {
             const regex = /(((https?:\/\/)|(www\.))[^\s]+)/g;
@@ -47,7 +108,7 @@
         function send_ai(number){
             console.log("sending")
             //ID of elements
-            let prompt_id="prompt"+number;
+            let prompt_id="prompt1";
             let action="action"+number;
             
             let prompt_content=document.getElementById(prompt_id).value;
@@ -193,7 +254,7 @@
         }
         
         function disable_actions_on_call(data,number){
-            let prompt_id="prompt"+number;
+            let prompt_id="prompt1";
             let content=data.choices[0].message.content;
             var newP = document.getElementById("response_ai");
             newP.innerHTML=content;
@@ -280,13 +341,14 @@
             location.reload();
         }
         function new_interaction(){
-            if(document.getElementById("prompt"+number_actual_block).value!=""){
-                document.getElementById("action"+number_actual_block).innerHTML ="";     
-                create_new_prompts_inputs(false);
+            let empty_field=all_data_from_db.find(e=>e=="");
+            if(!empty_field){
+                document.getElementById("error_message").innerHTML ="";     
+                create_new_iteration_button()
                 //Adding new element to the array which contorls the insertions or updates of the prompts
                 control_insertion_prompts[number_actual_block]=true;
             }else{
-                document.getElementById(name_last_action).innerHTML ="Please type something before adding other iteration";
+                document.getElementById("error_message").innerHTML ="Please type something on the "+empty_field+" iteration before adding other iteration";
             }
         }
         function set_id_prompt(res,number){
@@ -298,13 +360,14 @@
         
         function inserting_into_db(number) {
             //ID of elements
-            let prompt="prompt"+number;
+            let prompt="prompt1";
             let action="action"+number;
             var input = document.getElementById(prompt).value;    
             if(control_insertion_prompts[number]){
+                console.log("insertado")
                 //New insertion of the data url,body_content,todo,args
-                if(interation==0){
-                    api_call("back.php", JSON.stringify({functionName: 'insertNewInitialPrompt', args: [input ,interation,CUSTOMER_ID]}),{},set_id_prompt,number)
+                if(number==1){
+                    api_call("back.php", JSON.stringify({functionName: 'insertNewInitialPrompt', args: [input ,number,CUSTOMER_ID]}),{},set_id_prompt,number)
                     console.log(ids_prompts[number])
                 }else{
                     console.log(ids_prompts[number])
@@ -312,8 +375,10 @@
                 }
                 
                 
+                
                 control_insertion_prompts[number]=false;
             }else{
+                console.log("actualizando")
                 //Update of the current prompt
                 if(number==1){
                     api_call("back.php", JSON.stringify({functionName: 'updateInitialPrompt', args: [input ,ids_prompts[1]]}),{})
@@ -322,4 +387,6 @@
                     api_call("back.php", JSON.stringify({functionName: 'updateIterationPrompt', args: [input ,number,ids_prompts[1]]}),{})
                 }
             }
+            all_data_from_db[number]=input;
+            console.log(all_data_from_db)
         }

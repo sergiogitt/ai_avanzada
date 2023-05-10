@@ -82,8 +82,8 @@ div.menu ul li a {
     margin: 1rem;
     box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
  }
- div.menu ul li a.selected {
-    background-color: #59A83D;
+ div.menu .selected,.selected {
+    background-color: #59A83D !important;
  }
  #wrapper{
     padding: 1rem 4rem;

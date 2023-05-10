@@ -13,7 +13,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
 </head>
-<body onload="get_actual_data_user(1)">
+<body onload="get_actual_data_user(2)">
 <div id="wrapper">
 <h1>Auto GPT</h1>
 <?php
@@ -25,10 +25,10 @@
     <div id="blocks_container" >
         <div id="iteration_bar">
             <div id="iterations">
-                <button class="iteration_button shadow">Iteration 1</button>
+                <button class="selected iteration_button shadow " id="iteration1" onclick="load_iteration_data(1)">ITERATION 1</button>
             </div>
             
-            <button type="button" class="iteration_button shadow" onclick="new_interaction()">+</button>
+            <button type="button" class="iteration_button shadow" onclick="create_new_iteration_button(null,true)">+</button>
         </div>
         <div id="chat">
             <div id="input_area">
@@ -37,6 +37,7 @@
                     <button type="button" class="button_link" onclick="delete_interaction()">DELETE</button>
                 </div>
                 <textarea id="prompt1" oninput="inserting_into_db(1)"  rows='20' cols='70'></textarea>
+                <p id="error_message"></p>
             </div>
             <div id="output">
                 <div>
