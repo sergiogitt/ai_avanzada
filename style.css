@@ -12,12 +12,7 @@ div#flex_container{
 .buttons{
     background-color: red;
 }
-div.menu,div#user_wrapp{
-    width: 100%;
-    background-color: #65785F;
-    margin-bottom: 2rem;
-    
-}
+
 div#user_wrapp{
     display: flex;
     flex-direction: column;
@@ -62,9 +57,17 @@ button.button_link{
     border: none;
     cursor: pointer;
 }
+/*Header*/
+div.menu,div#user_wrapp{
+    width: 100%;
+    background-color: #65785F;
+    margin-bottom: 2rem;
+    
+}
 div.menu ul{
     display: flex;
     flex-direction: row;
+    
         
 }
 div.menu ul li  {
@@ -94,6 +97,14 @@ div.menu ul li a {
     border-right: 1rem solid transparent;
     border-image: linear-gradient(to left, red, #11340A) 1;
     border-image: linear-gradient(to right, #21421b, #1A1A1A) 1;
+ }
+ #log_out{
+    margin-left: auto;
+ }
+ #log_out button:hover,div.menu ul li a:hover{
+    cursor:pointer;
+   background-color: #59A83D;
+   color:black
  }
  /*AutoGPT*/
  #iteration_bar{
@@ -127,7 +138,7 @@ div.menu ul li a {
     border-radius: 10px;
     border: none;
     color: white;
-    margin: 0.5rem 1rem;
+    margin:  1rem;
  }
  #output{
     flex: 0 60%;

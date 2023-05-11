@@ -1,6 +1,10 @@
 
 
-     const CUSTOMER_ID=2;
+    
+    if(!sessionStorage.ID){
+        window.location.href = "login_agpt.php"; // redirect to login page
+    }
+    const CUSTOMER_ID=sessionStorage.ID;
         let number_actual_block=1;
         let number_new_block=number_actual_block+1;
         let ids_prompts=[];
@@ -14,13 +18,14 @@
         let buttons_to_disable=document.getElementsByTagName('button');
         function get_actual_data_user(){
             let user;
+            console.log("fovk")
             if(sessionStorage.auto_gpt_view_user){
                 user=sessionStorage.auto_gpt_view_user;
             }else{
-                user=2;
+                user=CUSTOMER_ID;
             }
+            console.log(user)
             
-            console.log(localStorage)
             api_call("back.php",JSON.stringify({functionName: 'getFirstData', args: [user]}),{},fill_first_field_with_data,null);
         }
         function fill_first_field_with_data(answer){
@@ -31,7 +36,6 @@
                 
                 document.getElementById("prompt1").value=answer.prompt;
                 all_data_from_db.push(answer.prompt)
-                console.log(all_data_from_db)
                 api_call("back.php",JSON.stringify({functionName: 'getSecondData', args: [ids_prompts[1]]}),{},create_new_iteration_button);
                
             }else{
@@ -47,7 +51,6 @@
                     //Adding new element to the array which contorls the insertions or updates of the prompts
                     control_insertion_prompts[number_actual_block]=false;
                 });
-                console.log(all_data_from_db)
         }
         function load_iteration_data(number){
             let input=document.getElementById("prompt1");

@@ -143,6 +143,29 @@ function getFirstData($customer_id){
    }
 
 }
+function logUser($user,$password){
+    try
+   {
+    $conection=start_conection();
+    $query="select * from tbl_users where display_name=? and password=?";
+    $sentence=$conection->prepare($query);
+    $data[]=$user;
+    $data[]=$password;
+    $sentence->execute($data);
+    if($sentence->rowCount()>0){
+        echo  json_encode($sentence->fetch(PDO::FETCH_ASSOC));
+    }else{
+        echo  json_encode(["not_found"=>"Not found that client"]);
+    }
+       
+       
+   }
+   catch(PDOException $e)
+   {
+       echo "Cant execute the query. Error:".$e->getMessage();
+   }
+
+}
 function getSecondData($prompt_id){
     try
    {
@@ -160,6 +183,7 @@ function getSecondData($prompt_id){
    }
 
 }
+
 if (isset($_POST['prompt'])) {
   echo "entre";
     if(isset($_POST['attempt'])){
