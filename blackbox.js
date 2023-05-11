@@ -341,16 +341,17 @@
                 number_actual_block++;
                 number_new_block++;
         }
-        function remove_interaction(iteration,prompt_id){
+        function delete_interaction(){
+            console.log(ids_prompts)
             $.ajax({
                 type : "POST",  
                 url  : "back.php",  
-                data : { remove_interaction : iteration, prompt_id:prompt_id},
+                data : { remove_interaction : number_iteration_watching, prompt_id:ids_prompts[1]},
                 success: function(res){  
-                                   
+                    location.reload();       
                 }
             });
-            location.reload();
+            
         }
         function new_interaction(){
             let empty_field=all_data_from_db.find(e=>e=="");

@@ -49,6 +49,7 @@ button.shadow{
 div.user{
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
    
 }
 button.button_link{
@@ -67,6 +68,7 @@ div.menu,div#user_wrapp{
 div.menu ul{
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
     
         
 }

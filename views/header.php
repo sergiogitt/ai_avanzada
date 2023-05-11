@@ -1,9 +1,15 @@
+<?php
+$PATH="http://localhost/autogpt";
+?>
 <div class="menu">
         <ul>
-            <li><a href="clients.php" id="clients_menu" onClick="change_view('client')">CLIENTS</a></li>
-            <li><a href="files.php" id="files_menu" onClick="change_view('files')">ADD FILES</a></li>
-            <li><a href="autogpt.php" id="autogpt_menu" onClick="change_view('autogpt') ">AUTOGPT</a></li>
-            <li id="log_out"><button  class="iteration_button shadow" onclick="log_out()">LOG OUT</button></li>
+          <?php
+          echo "<li><a href=".$PATH."/clients.php id='clients_menu' onClick='change_view('client')'>CLIENTS</a></li>";
+          echo "<li><a href=".$PATH."/files.php id='files_menu' onClick='change_view('files')'>ADD FILES</a></li>";
+          echo "<li><a href=".$PATH."/autogpt.php id='autogpt_menu' onClick='change_view('autogpt') '>AUTOGPT</a></li>";
+          echo "<li id='log_out'><button  class='iteration_button shadow' onclick='log_out()'>LOG OUT</button></li>";
+          
+          ?>
         </ul>
 </div>
 <script>

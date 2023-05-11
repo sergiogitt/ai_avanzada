@@ -34,7 +34,7 @@
             <div id="input_area">
                 <div id="action_buttons">
                     <button type="submit" class="button_link" onclick="send_ai(1):submit()">RUN</button>
-                    <button type="button" class="button_link" onclick="delete_interaction()">DELETE</button>
+                    <button type="button" class="button_link" onclick="security(delete_interaction())">DELETE</button>
                 </div>
                 <textarea id="prompt1" oninput="security(inserting_into_db,[1])"  rows='20' cols='70'></textarea>
                 <p id="error_message"></p>

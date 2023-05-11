@@ -303,7 +303,7 @@ if(isset($_POST['delete_user'])){
 if(isset($_POST['remove_interaction'])){
     try
    {
-     
+    $conection=start_conection();
        $query="delete  from tbl_prompt_iterations where PROMPT_ID=? and prompt_iteration=?";
        $sentence=$conection->prepare($query);
        $data[]=$_POST["prompt_id"];
@@ -313,7 +313,7 @@ if(isset($_POST['remove_interaction'])){
        if($sentence->rowCount()>0){
         echo  json_encode($sentence->fetch(PDO::FETCH_ASSOC));
        }else{
-        echo  json_encode(["not_found"=>"Not found that client"]);
+        echo  json_encode(["delete"=>"Iteration".$_POST["remove_interaction"]." removed succesfully"]);
        }
        
        
