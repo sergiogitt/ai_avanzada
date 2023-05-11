@@ -4,6 +4,7 @@
     if(!sessionStorage.ID){
         window.location.href = "login_agpt.php"; // redirect to login page
     }
+    const TIME_SESSION_EXPIRED=10;
     const CUSTOMER_ID=sessionStorage.ID;
         let number_actual_block=1;
         let number_new_block=number_actual_block+1;
@@ -400,4 +401,36 @@
             }
             all_data_from_db[number]=input;
             console.log(all_data_from_db)
+        }
+        function security(todo,params=null){  
+            console.log(sessionStorage.last_action)
+            if(((new Date()/1000)-sessionStorage.last_action)<TIME_SESSION_EXPIRED*60){
+                api_call("back.php",JSON.stringify({functionName: 'logUser', args: [sessionStorage.user,sessionStorage.password]}),{},analize_security_response,[todo,params]);
+               
+            }
+            else
+            {
+                sessionStorage.clear();
+                sessionStorage.setItem("error","Session expired, log again");
+                window.location.href = "login_agpt.php"; // redirect to login page
+        
+                console.log("no cumple tmepo")
+                
+            }
+             
+            
+        }
+        function analize_security_response(data,ar){
+            if(data.ID){
+                sessionStorage.last_action=new Date()/1000;
+                if(ar[0]){
+                    ar[0](ar[1])
+                }
+                
+            }else if(data.not_found){
+                 window.location.href = "login_agpt.php"; // redirect to login page
+                 sessionStorage.clear();
+            }else if(data.internal_error){
+                sessionStorage.clear();
+            }
         }

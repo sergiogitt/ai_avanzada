@@ -36,7 +36,7 @@
                     <button type="submit" class="button_link" onclick="send_ai(1):submit()">RUN</button>
                     <button type="button" class="button_link" onclick="delete_interaction()">DELETE</button>
                 </div>
-                <textarea id="prompt1" oninput="inserting_into_db(1)"  rows='20' cols='70'></textarea>
+                <textarea id="prompt1" oninput="security(inserting_into_db,[1])"  rows='20' cols='70'></textarea>
                 <p id="error_message"></p>
             </div>
             <div id="output">
@@ -61,18 +61,7 @@
                 </div>
                 
             </div>
-            <!--<form action="back.php" method="post" enctype="multipart/form-data">
-                <div id="block1" >
-                    <textarea id="prompt1" oninput="inserting_into_db(1)"  rows='20' cols='70'></textarea>
-                    <div class="buttons">
-                        <button type="submit" class="btn btn-primary" onclick="send_ai(1):submit()">Send To AI</button>
-                        <button type="button" class="btn btn-primary" onclick="new_interaction()">New iteration +</button>
-                        <input type="file" id="file1" name="file"></input>
-                    </div>
-                
-                    <p id="action1"></p>
-                </div>
-            </form>-->
+            
         </div>
         
     </div>
