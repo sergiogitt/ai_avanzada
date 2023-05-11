@@ -30,6 +30,7 @@ if(data.not_found){
     sessionStorage.setItem("password",data.password)
     sessionStorage.setItem("rol",data.rol)
     sessionStorage.setItem("ID",data.ID)
+    sessionStorage.setItem("last_action",new Date() / 1000)
     window.location.href = "clients.php";
 
 }

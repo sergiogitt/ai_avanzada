@@ -1,14 +1,15 @@
 if(!sessionStorage.ID){
     window.location.href = "login_agpt.php"; // redirect to login page
 }
+const TIME_SESSION_EXPIRED=10;
 let editing_user=[];
 let name_editing_user;
 let wrapper=document.getElementById("user_wrapp");
-if(!localStorage.actual_view){
-    localStorage.setItem("actual_view","users");
-    console.log(localStorage)
+if(!sessionStorage.actual_view){
+    sessionStorage.setItem("actual_view","users");
+    console.log(sessionStorage)
 }else{
-    localStorage.actual_view="users";
+    sessionStorage.actual_view="users";
     console.log(document.getElementById("clients_menu"))
     document.getElementById("clients_menu").setAttribute("class",'selected')
 }
@@ -41,8 +42,8 @@ function load_users(){
                 newRow.appendChild(newColumn2);
                 newTable.appendChild(newRow);
                 if(sessionStorage.rol=="admin"){
-                    link.setAttribute("onclick", `create_session('${element.ID}')`);
-                    let actionButton = "<div id='action_button_"+element.ID+"'><button  class='button_link' onClick=\"edit_user('" + element.ID + "','"+element.display_name+"')\">Edit</button><button  class='button_link' onClick=\"delete_user('" + element.ID + "','"+element.display_name+"')\">Delete</button></div>";
+                    link.setAttribute("onclick", `security(create_session,['${element.ID}'])`);
+                    let actionButton = "<div id='action_button_"+element.ID+"'><button class='button_link' onClick=\"security(edit_user,['" + element.ID + "','" + element.display_name + "'])\">Edit</button><button class='button_link' onClick=\"security(delete_user,['" + element.ID + "','" + element.display_name + "'])\">Delete</button></div>";
                     newRow.innerHTML+=actionButton;
                 }
                 wrapper.appendChild(newTable);
@@ -53,18 +54,66 @@ function load_users(){
         }
     });
 }
+function security(todo,params=null){  
+    console.log(sessionStorage.last_action)
+    if(((new Date()/1000)-sessionStorage.last_action)<TIME_SESSION_EXPIRED*60){
+        api_call("back.php",JSON.stringify({functionName: 'logUser', args: [sessionStorage.user,sessionStorage.password]}),{},analize_security_response,[todo,params]);
+       
+    }
+    else
+    {
+        sessionStorage.clear();
+        sessionStorage.setItem("error","Session expired, log again");
+        window.location.href = "login_agpt.php"; // redirect to login page
+
+        console.log("no cumple tmepo")
+        
+    }
+      
+}
+function api_call(url,body_content,header_content,todo=null,args){
+    fetch(url, {
+    headers:header_content,
+    method: 'POST',
+    body:body_content,
+    })
+    .then(response => response.json())
+    .then(data => {
+        if(todo){
+            todo(data,args);
+        }
+       
+    }
+    )
+    .catch(error => console.error(error));
+}
+
+function analize_security_response(data,ar){
+    if(data.ID){
+        sessionStorage.last_action=new Date()/1000;
+        if(ar[0]){
+            ar[0](ar[1])
+        }
+        
+    }else if(data.not_found){
+         window.location.href = "login_agpt.php"; // redirect to login page
+         sessionStorage.clear();
+    }else if(data.internal_error){
+        sessionStorage.clear();
+    }
+}
 function create_session(id){
     sessionStorage.setItem("auto_gpt_view_user",id);
     console.log(sessionStorage)
     window.location.href = 'autogpt.php';
 }
 function confirm_editing(user_id){
-    console.log(user_id+name)
+    console.log(user_id[0]+name)
     let new_name_input=document.getElementById("new_name").value;
     $.ajax({
             type : "POST",  
             url  : "back.php",  
-            data : { edit_user:user_id,new_name:new_name_input},
+            data : { edit_user:user_id[0],new_name:new_name_input},
             success: function(res){  
                 location.reload();
                 
@@ -75,48 +124,54 @@ function confirm_delete(user_id){
     $.ajax({
             type : "POST",  
             url  : "back.php",  
-            data : { delete_user:user_id},
+            data : { delete_user:user_id[0]},
             success: function(res){  
                 location.reload();
             }
         });
 }
-function cancel_editing(user_id,name){
-    document.getElementById("action_button_"+user_id).innerHTML="<button class='button_link' onClick=\"edit_user('" +user_id + "','"+name+"')\">Edit</button><button class='button_link' onClick=\"delete_user('" +user_id + "','"+name+"')\">Delete</button>";
-    console.log(name)
-    document.getElementById("name_user_"+user_id).innerHTML="<a href='index.php?user_id="+user_id+"'>"+name+"</a>";
+function cancel_editing(ar){
+    document.getElementById("action_button_" + ar[0]).innerHTML = "<button class='button_link' onClick=\"security(edit_user,['" + ar[0] + "','" + ar[1] + "'])\">Edit</button><button class='button_link' onClick=\"security(delete_user,['" + ar[0] + "','" + ar[1] + "'])\">Delete</button>";
+    document.getElementById("name_user_" + ar[0]).innerHTML =  `<div onclick="security(create_session, [${+ar[0]}])">${ar[1]}</div>`;
 }
-function delete_user(user_id,value){
+function cancel_delete(ar){
+    console.log("cancelando "+ar[0]+ ar[1])
+    document.getElementById("action_button_" + ar[0]).innerHTML = "<button class='button_link' onClick=\"security(edit_user,['" + ar[0] + "','" + ar[1] + "'])\">Edit</button><button class='button_link' onClick=\"security(delete_user,['" + ar[0] + "','" + ar[1] + "'])\">Delete</button>";
+    document.getElementById("name_user_" + ar[0]).innerHTML =  `<div onclick="security(create_session, [${+ar[0]}])">${ar[1]}</div>`;
+}
+function delete_user(ar){
     console.log(name_editing_user);
     if(editing_user.length>0){
-        document.getElementById("name_user_"+editing_user[0]).innerHTML="<a href='index.php?user_id="+editing_user[0]+"'>"+name_editing_user+"</a>";
-        document.getElementById("action_button_"+editing_user[0]).innerHTML="<button  class='button_link' onClick=\"edit_user('" +editing_user[0]+ "','"+name_editing_user+"')\">Edit</button><button  class='button_link' onClick=\"delete_user('" +editing_user[0]+ "','"+name_editing_user+"')\">Delete</button>";
+        document.getElementById("name_user_" + +editing_user[0]).innerHTML = `<div onclick="security(create_session, [${+editing_user[0]}])">${name_editing_user}</div>`;
+        document.getElementById("action_button_"+editing_user[0]).innerHTML="<button  class='button_link' onClick=\"security(edit_user,['" +editing_user[0]+ "','"+name_editing_user+"'])\">Edit</button><button  class='button_link' onClick=\"security(delete_user,['" +editing_user[0]+ "','"+name_editing_user+"'])\">Delete</button>";
         editing_user=[];
         name_editing_user="";
     }
-    document.getElementById("action_button_"+user_id).innerHTML="<button class='button_link' onClick=\"cancel_editing('" +user_id + "','"+value+"')\">Cancel</button><button class='button_link' onClick=\"confirm_delete('" +user_id +"')\">Confirm</button>";
-    editing_user.push(user_id);
-    name_editing_user=value;
+    document.getElementById("action_button_"+ar[0]).innerHTML="<button class='button_link' onClick=\"security(cancel_delete,['" +ar[0] + "','"+ar[1]+"'])\">Cancel</button><button class='button_link' onClick=\"security(confirm_delete,['" +ar[0] +"'])\">Confirm</button>";
+    editing_user.push(ar[0]);
+    name_editing_user=ar[1];
     
 }
-function edit_user(user_id,value){
-    console.log(name_editing_user);
+function edit_user(ar){
     if(editing_user.length>0){
-        document.getElementById("name_user_"+editing_user[0]).innerHTML="<a href='index.php?user_id="+editing_user[0]+"'>"+name_editing_user+"</a>";
-        document.getElementById("action_button_"+editing_user[0]).innerHTML="<button  class='button_link' onClick=\"edit_user('" +editing_user[0]+ "','"+name_editing_user+"')\">Edit</button><button  class='button_link' onClick=\"delete_user('" +editing_user[0]+ "','"+name_editing_user+"')\">Delete</button>";
+        console.log("antiguo cambio"+name_editing_user)
+        document.getElementById("name_user_" + +editing_user[0]).innerHTML = `<div onclick="security(create_session, [${+editing_user[0]}])">${name_editing_user}</div>`;
+        document.getElementById("action_button_"+editing_user[0]).innerHTML="<button  class='button_link' onClick=\"security(edit_user,['" +editing_user[0]+ "','"+name_editing_user+"'])\">Edit</button><button  class='button_link' onClick=\"security(delete_user,['" +editing_user[0]+ "','"+name_editing_user+"'])\">Delete</button>";
+
         editing_user=[];
         name_editing_user="";
     }
-    document.getElementById("action_button_"+user_id).innerHTML="<button class='button_link' onClick=\"cancel_editing('" +user_id + "','"+value+"')\">Cancel</button><button class='button_link' onClick=\"confirm_editing('" +user_id + "','"+value+"')\">Confirm</button>";
-    editing_user.push(user_id);
-    name_editing_user=value;
-    document.getElementById("name_user_"+user_id).innerHTML="<input type='text' id='new_name' value="+value+">";
+    
+    document.getElementById("action_button_" + ar[0]).innerHTML = "<button class='button_link' onClick=\"security(cancel_editing, ['" + ar[0] + "','" + ar[1] + "'])\">Cancel</button><button class='button_link' onClick=\"security(confirm_editing, ['" + ar[0] + "','" + ar[1] + "'])\">Confirm</button>";
+    editing_user.push(ar[0]);
+    name_editing_user=ar[1];
+    document.getElementById("name_user_"+ar[0]).innerHTML="<input type='text' id='new_name' value="+ar[1]+">";
 }
 function create_user_form(){
     var newDiv = document.createElement("div");
     newDiv.setAttribute("id","new_user_form");
     document.getElementById("new_user_button").setAttribute('disabled',true);
-    newDiv.innerHTML="<h3>New user Form</h3><p><label for='name'>Name:</label><input type='text' id='name'/></p><button class='btn btn-info' onClick='add_user()'>Create user</button>";
+    newDiv.innerHTML="<h3>New user Form</h3><p><label for='name'>Name:</label><input type='text' id='name'/></p><button class='btn btn-info' onClick='security(add_user,null)'>Create user</button>";
     wrapper.appendChild(newDiv);
 }
 function add_user(){

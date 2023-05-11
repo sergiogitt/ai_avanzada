@@ -162,7 +162,7 @@ function logUser($user,$password){
    }
    catch(PDOException $e)
    {
-       echo "Cant execute the query. Error:".$e->getMessage();
+       echo  json_encode(["internal_error"=>"Cant execute the query. Error:".$e->getMessage()]);
    }
 
 }
