@@ -4,6 +4,12 @@
     if(!sessionStorage.ID){
         window.location.href = "login_agpt.php"; // redirect to login page
     }
+    // Set a timeout of 5 minutes (300000 milliseconds)
+    setTimeout(function() {
+        // Reload the current page
+        location.reload();
+    }, 300000);
+  
     const TIME_SESSION_EXPIRED=10;
     const CUSTOMER_ID=sessionStorage.ID;
         let number_actual_block=1;
@@ -122,7 +128,7 @@
             //ID of elements
             let prompt_id="prompt1";
             let action="action"+number;
-            
+            let model_choiced=document.getElementById("model").value;
             let prompt_content=document.getElementById(prompt_id).value;
             if(prompt_content!=""){
                 
@@ -178,8 +184,9 @@
                             });                            
                         }
                         ).then( response=>{
+                            
                             api_call(API_ENDPOINT, JSON.stringify({
-                                "model": "gpt-3.5-turbo",
+                                "model": model_choiced,
                                 "messages": [{"role": "user", "content": prompt_content}],
                                 "temperature": 0.7
                             }), header, disable_actions_on_call,number);
@@ -190,7 +197,7 @@
                 }else{
                    
                     api_call(API_ENDPOINT, JSON.stringify({
-                        "model": "gpt-3.5-turbo",
+                        "model": model_choiced,
                         "messages": [{"role": "user", "content": prompt_content}],
                         "temperature": 0.7
                     }), header, disable_actions_on_call,number);
@@ -198,7 +205,7 @@
                     
                     
                 }
-                analise_files(number);
+                //analise_files(number);
                
             }else{
                 document.getElementById(action).innerHTML ="Please type something";

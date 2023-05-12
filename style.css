@@ -19,8 +19,7 @@ div#user_wrapp{
     padding: 1rem 2rem;
 }
 div#user_wrapp button#new_user_button{
-    align-self: flex-end;
-    
+    align-self: flex-end;  
 }
 ul#list_of_users{
     padding: 0;
@@ -33,7 +32,6 @@ ul#list_of_users li.user{
     padding: 0.5rem 1rem;
     margin-bottom: 1rem;
     margin-top: 1rem;
-    
 }
 button.new_button{
     background-color: #628956;
@@ -94,7 +92,10 @@ div.menu ul li a {
     padding: 1rem 4rem;
     margin: 0 auto;
     background-color: #0D2E02;
-    height: 100vh;
+    min-height: 100vh;
+ }
+ html{
+    min-height: 100vh;
     border-left: 1rem solid transparent;
     border-right: 1rem solid transparent;
     border-image: linear-gradient(to left, red, #11340A) 1;
@@ -116,18 +117,29 @@ div.menu ul li a {
     flex-direction: row;
     padding: 0.5rem;
     margin-top: 1rem;
+    flex-wrap: wrap;
  }
  #chat{
     display: flex;
     flex-direction: row;
     margin-top: 1rem;
+    flex-wrap: wrap;
  }
- #input-area{
-    flex: 0 50%;
+ #input_area{
+    flex: 1 40% !important;
+    display: flex;
+    flex-direction: column;
  }
+
+   
+ 
  #input_area textarea{
     border: none;
+    width: 100%;
+    height: 20rem !important;
     background-color: #849280;
+    height: max-content;
+    
  }
  #action_buttons{
     display: flex;
@@ -143,8 +155,8 @@ div.menu ul li a {
     margin:  1rem;
  }
  #output{
-    flex: 0 60%;
-    margin-left: 4rem;
+    flex: 1 58%;
+    margin-left: 1rem;
     display: flex;
     flex-direction: column;
     justify-content: space-between;

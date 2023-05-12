@@ -33,17 +33,28 @@
         <div id="chat">
             <div id="input_area">
                 <div id="action_buttons">
-                    <button type="submit" class="button_link" onclick="send_ai(1):submit()">RUN</button>
+                    <button type="submit" class="button_link" onclick="security(send_ai)">RUN</button>
                     <button type="button" class="button_link" onclick="security(delete_interaction())">DELETE</button>
                 </div>
-                <textarea id="prompt1" oninput="security(inserting_into_db,[1])"  rows='20' cols='70'></textarea>
+                <textarea id="prompt1" oninput="security(inserting_into_db,[1])" ></textarea>
                 <p id="error_message"></p>
             </div>
             <div id="output">
                 <div>
                     <div class="spaced_inputs">
                         <label for="model">MODEL SELECTION</label>
-                        <div><input type="text" id="model"></div>
+                        <div>
+                            <select id="model">
+                                <option value="gpt-3.5-turbo">gpt-3.5-turbo</option>
+                                <option value="gpt-3.5-turbo-0301">gpt-3.5-turbo-0301</option>
+                                <option value="gpt-4" disabled>gpt-4</option>
+                                <option value="gpt-4-0314" disabled>gpt-4-0314</option>
+                                <option value="gpt-4-32k" disabled>gpt-4-32k</option>
+                                <option value="gpt-4-32k-0314" disabled>gpt-4-32k-0314</option>
+                                
+                                
+                            </select>
+                        </div>
                     </div>
                     <div class="spaced_inputs">
                         <label for="memmory">INCLUDE FILES AS MEMORY</label>
@@ -56,8 +67,11 @@
                 </div>
                 <div id="response">
                     <h3>ITERATION OUTPUT</h3>
-                    <p id="response_ai"></p>
-                    <div id="loading"></div>
+                    <div>
+                        <p id="response_ai"></p>
+                        <div id="loading"></div>
+                    </div>
+                    
                 </div>
                 
             </div>
