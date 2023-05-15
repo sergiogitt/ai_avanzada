@@ -2,7 +2,6 @@
 
 
 function log_user() {
-    console.log("gol")
     let user = document.getElementById("user").value;
     let password = document.getElementById("password").value;
     if (user == "") {
@@ -25,7 +24,6 @@ function log_user() {
 }
 function activate_local_storage(data) {
     if (data.not_found) {
-        console.log("rgd")
         document.getElementById("wrong_credentials").removeAttribute("hidden");
     } else {
         sessionStorage.setItem("user", data.display_name)
