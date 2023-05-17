@@ -1,0 +1,107 @@
+[15-May-2023 08:33:24 UTC] PHP Parse error:  syntax error, unexpected token "%" in /home/aijk/public_html/autogpt/src/bd_config.php on line 8
+[15-May-2023 08:33:33 UTC] PHP Parse error:  syntax error, unexpected token "%" in /home/aijk/public_html/autogpt/src/bd_config.php on line 8
+[15-May-2023 08:34:59 UTC] PHP Parse error:  syntax error, unexpected token "%" in /home/aijk/public_html/autogpt/src/bd_config.php on line 8
+[15-May-2023 08:37:47 UTC] PHP Parse error:  syntax error, unexpected token "%" in /home/aijk/public_html/autogpt/src/bd_config.php on line 8
+[15-May-2023 08:40:08 UTC] PHP Parse error:  syntax error, unexpected token "%" in /home/aijk/public_html/autogpt/src/bd_config.php on line 8
+[15-May-2023 09:11:25 UTC] PHP Parse error:  syntax error, unexpected identifier "id", expecting "," or ";" in /home/aijk/public_html/autogpt/views/header.php on line 11
+[15-May-2023 09:11:31 UTC] PHP Parse error:  syntax error, unexpected identifier "id", expecting "," or ";" in /home/aijk/public_html/autogpt/views/header.php on line 11
+[15-May-2023 10:41:52 UTC] PHP Parse error:  syntax error, unexpected token "foreach" in /home/aijk/public_html/autogpt/back.php on line 92
+[15-May-2023 10:42:55 UTC] PHP Parse error:  syntax error, unexpected token "foreach" in /home/aijk/public_html/autogpt/back.php on line 92
+[15-May-2023 10:43:24 UTC] PHP Parse error:  syntax error, unexpected token "foreach" in /home/aijk/public_html/autogpt/back.php on line 92
+[15-May-2023 10:43:42 UTC] PHP Parse error:  syntax error, unexpected token "foreach" in /home/aijk/public_html/autogpt/back.php on line 92
+[15-May-2023 10:44:42 UTC] PHP Parse error:  syntax error, unexpected token "foreach" in /home/aijk/public_html/autogpt/back.php on line 92
+[15-May-2023 10:45:22 UTC] PHP Parse error:  syntax error, unexpected token "foreach" in /home/aijk/public_html/autogpt/back.php on line 92
+[15-May-2023 10:46:27 UTC] PHP Parse error:  syntax error, unexpected token "foreach" in /home/aijk/public_html/autogpt/back.php on line 288
+[15-May-2023 10:50:13 UTC] PHP Parse error:  syntax error, unexpected token "foreach" in /home/aijk/public_html/autogpt/back.php on line 177
+[15-May-2023 10:51:00 UTC] PHP Parse error:  syntax error, unexpected token "foreach" in /home/aijk/public_html/autogpt/back.php on line 177
+[15-May-2023 10:52:04 UTC] PHP Parse error:  syntax error, unexpected token "foreach" in /home/aijk/public_html/autogpt/back.php on line 177
+[15-May-2023 10:53:08 UTC] PHP Parse error:  syntax error, unexpected token "foreach" in /home/aijk/public_html/autogpt/back.php on line 177
+[15-May-2023 10:56:02 UTC] PHP Parse error:  syntax error, unexpected token "foreach" in /home/aijk/public_html/autogpt/back.php on line 177
+[15-May-2023 10:57:31 UTC] PHP Parse error:  syntax error, unexpected token "foreach" in /home/aijk/public_html/autogpt/back.php on line 177
+[15-May-2023 10:57:47 UTC] PHP Parse error:  syntax error, unexpected token "foreach" in /home/aijk/public_html/autogpt/back.php on line 177
+[15-May-2023 10:58:35 UTC] PHP Parse error:  syntax error, unexpected token "foreach" in /home/aijk/public_html/autogpt/back.php on line 177
+[15-May-2023 10:58:50 UTC] PHP Parse error:  syntax error, unexpected token "foreach" in /home/aijk/public_html/autogpt/back.php on line 177
+[15-May-2023 10:59:35 UTC] PHP Parse error:  syntax error, unexpected token "foreach" in /home/aijk/public_html/autogpt/back.php on line 177
+[15-May-2023 10:59:50 UTC] PHP Parse error:  syntax error, unexpected token "echo" in /home/aijk/public_html/autogpt/back.php on line 178
+[15-May-2023 11:02:18 UTC] PHP Parse error:  syntax error, unexpected token "echo" in /home/aijk/public_html/autogpt/back.php on line 178
+[15-May-2023 11:02:34 UTC] PHP Parse error:  syntax error, unexpected token "echo" in /home/aijk/public_html/autogpt/back.php on line 178
+[15-May-2023 11:02:37 UTC] PHP Parse error:  syntax error, unexpected token "echo" in /home/aijk/public_html/autogpt/back.php on line 178
+[15-May-2023 11:06:20 UTC] PHP Parse error:  syntax error, unexpected token "foreach" in /home/aijk/public_html/autogpt/back.php on line 177
+[15-May-2023 11:07:12 UTC] PHP Parse error:  syntax error, unexpected token "foreach" in /home/aijk/public_html/autogpt/back.php on line 177
+[15-May-2023 11:23:44 UTC] PHP Fatal error:  Uncaught TypeError: unlink(): Argument #1 ($filename) must be of type string, array given in /home/aijk/public_html/autogpt/back.php:187
+Stack trace:
+#0 /home/aijk/public_html/autogpt/back.php(187): unlink(Array)
+#1 /home/aijk/public_html/autogpt/back.php(30): deleteFile(Array)
+#2 {main}
+  thrown in /home/aijk/public_html/autogpt/back.php on line 187
+[15-May-2023 11:24:21 UTC] PHP Fatal error:  Uncaught TypeError: unlink(): Argument #1 ($filename) must be of type string, array given in /home/aijk/public_html/autogpt/back.php:187
+Stack trace:
+#0 /home/aijk/public_html/autogpt/back.php(187): unlink(Array)
+#1 /home/aijk/public_html/autogpt/back.php(30): deleteFile(Array)
+#2 {main}
+  thrown in /home/aijk/public_html/autogpt/back.php on line 187
+[15-May-2023 11:25:56 UTC] PHP Warning:  Array to string conversion in /home/aijk/public_html/autogpt/back.php on line 187
+[15-May-2023 11:25:56 UTC] PHP Warning:  unlink(uploaded_filesArray): No such file or directory in /home/aijk/public_html/autogpt/back.php on line 187
+[15-May-2023 11:26:08 UTC] PHP Warning:  Array to string conversion in /home/aijk/public_html/autogpt/back.php on line 187
+[15-May-2023 11:26:08 UTC] PHP Warning:  unlink(uploaded_files/Array): No such file or directory in /home/aijk/public_html/autogpt/back.php on line 187
+[15-May-2023 11:26:33 UTC] PHP Warning:  Array to string conversion in /home/aijk/public_html/autogpt/back.php on line 187
+[15-May-2023 11:26:33 UTC] PHP Warning:  unlink(uploaded_files/Array): No such file or directory in /home/aijk/public_html/autogpt/back.php on line 187
+[15-May-2023 11:26:49 UTC] PHP Warning:  Array to string conversion in /home/aijk/public_html/autogpt/back.php on line 187
+[15-May-2023 11:26:49 UTC] PHP Warning:  unlink(./uploaded_files/Array): No such file or directory in /home/aijk/public_html/autogpt/back.php on line 187
+[15-May-2023 11:28:39 UTC] PHP Warning:  Array to string conversion in /home/aijk/public_html/autogpt/back.php on line 188
+[16-May-2023 08:38:28 UTC] PHP Warning:  Undefined array key "file" in /home/aijk/public_html/autogpt/back.php on line 30
+[16-May-2023 08:38:28 UTC] PHP Warning:  Trying to access array offset on value of type null in /home/aijk/public_html/autogpt/back.php on line 30
+[16-May-2023 08:38:28 UTC] PHP Warning:  Undefined array key "file" in /home/aijk/public_html/autogpt/back.php on line 31
+[16-May-2023 08:38:28 UTC] PHP Warning:  Trying to access array offset on value of type null in /home/aijk/public_html/autogpt/back.php on line 31
+[16-May-2023 08:38:39 UTC] PHP Warning:  Undefined array key "file" in /home/aijk/public_html/autogpt/back.php on line 30
+[16-May-2023 08:38:39 UTC] PHP Warning:  Trying to access array offset on value of type null in /home/aijk/public_html/autogpt/back.php on line 30
+[16-May-2023 08:38:39 UTC] PHP Warning:  Undefined array key "file" in /home/aijk/public_html/autogpt/back.php on line 31
+[16-May-2023 08:38:39 UTC] PHP Warning:  Trying to access array offset on value of type null in /home/aijk/public_html/autogpt/back.php on line 31
+[16-May-2023 09:19:01 UTC] PHP Warning:  Undefined array key "fileInput" in /home/aijk/public_html/autogpt/back.php on line 9
+[16-May-2023 09:19:01 UTC] PHP Warning:  Trying to access array offset on value of type null in /home/aijk/public_html/autogpt/back.php on line 9
+[16-May-2023 09:19:01 UTC] PHP Warning:  Undefined array key "fileInput" in /home/aijk/public_html/autogpt/back.php on line 10
+[16-May-2023 09:19:01 UTC] PHP Warning:  Trying to access array offset on value of type null in /home/aijk/public_html/autogpt/back.php on line 10
+[16-May-2023 09:20:57 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home/aijk/public_html/autogpt/src/bd_config.php:12) in /home/aijk/public_html/autogpt/back.php on line 14
+[16-May-2023 09:21:41 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home/aijk/public_html/autogpt/src/bd_config.php:12) in /home/aijk/public_html/autogpt/back.php on line 14
+[16-May-2023 09:24:24 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home/aijk/public_html/autogpt/src/bd_config.php:12) in /home/aijk/public_html/autogpt/back.php on line 14
+[16-May-2023 09:26:11 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home/aijk/public_html/autogpt/src/bd_config.php:12) in /home/aijk/public_html/autogpt/back.php on line 14
+[16-May-2023 09:27:04 UTC] PHP Fatal error:  Uncaught Error: Undefined constant "SERVIDOR_BD" in /home/aijk/public_html/autogpt/back.php:42
+Stack trace:
+#0 /home/aijk/public_html/autogpt/back.php(153): start_conection()
+#1 /home/aijk/public_html/autogpt/back.php(33): logUser('admin', '81dc9bdb52d04dc...')
+#2 {main}
+  thrown in /home/aijk/public_html/autogpt/back.php on line 42
+[16-May-2023 09:27:22 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home/aijk/public_html/autogpt/src/bd_config.php:8) in /home/aijk/public_html/autogpt/back.php on line 14
+[16-May-2023 09:29:00 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home/aijk/public_html/autogpt/src/bd_config.php:8) in /home/aijk/public_html/autogpt/back.php on line 15
+[16-May-2023 09:30:09 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home/aijk/public_html/autogpt/src/bd_config.php:8) in /home/aijk/public_html/autogpt/back.php on line 14
+[16-May-2023 09:31:14 UTC] PHP Parse error:  syntax error, unexpected identifier "header" in /home/aijk/public_html/autogpt/back.php on line 15
+[16-May-2023 09:31:16 UTC] PHP Parse error:  syntax error, unexpected identifier "header" in /home/aijk/public_html/autogpt/back.php on line 15
+[16-May-2023 09:31:24 UTC] PHP Parse error:  syntax error, unexpected identifier "header" in /home/aijk/public_html/autogpt/back.php on line 15
+[16-May-2023 09:31:25 UTC] PHP Parse error:  syntax error, unexpected identifier "header" in /home/aijk/public_html/autogpt/back.php on line 15
+[16-May-2023 09:34:21 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home/aijk/public_html/autogpt/src/bd_config.php:6) in /home/aijk/public_html/autogpt/back.php on line 14
+[16-May-2023 09:40:10 UTC] PHP Warning:  Undefined array key "id" in /home/aijk/public_html/autogpt/back.php on line 12
+[16-May-2023 09:40:10 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home/aijk/public_html/autogpt/back.php:12) in /home/aijk/public_html/autogpt/back.php on line 16
+[16-May-2023 09:42:56 UTC] PHP Warning:  unlink(uploaded_files/4): Is a directory in /home/aijk/public_html/autogpt/back.php on line 194
+[16-May-2023 09:58:25 UTC] PHP Warning:  Undefined array key "id" in /home/aijk/public_html/autogpt/back.php on line 54
+[16-May-2023 09:58:25 UTC] PHP Warning:  scandir(./uploaded_files/-files): Failed to open directory: No such file or directory in /home/aijk/public_html/autogpt/back.php on line 56
+[16-May-2023 09:58:25 UTC] PHP Warning:  scandir(): (errno 2): No such file or directory in /home/aijk/public_html/autogpt/back.php on line 56
+[16-May-2023 09:58:25 UTC] PHP Warning:  foreach() argument must be of type array|object, bool given in /home/aijk/public_html/autogpt/back.php on line 59
+[16-May-2023 09:59:00 UTC] PHP Warning:  scandir(./uploaded_files/-files): Failed to open directory: No such file or directory in /home/aijk/public_html/autogpt/back.php on line 56
+[16-May-2023 09:59:00 UTC] PHP Warning:  scandir(): (errno 2): No such file or directory in /home/aijk/public_html/autogpt/back.php on line 56
+[16-May-2023 09:59:00 UTC] PHP Warning:  foreach() argument must be of type array|object, bool given in /home/aijk/public_html/autogpt/back.php on line 59
+[16-May-2023 10:11:28 UTC] PHP Parse error:  syntax error, unexpected token "." in /home/aijk/public_html/autogpt/back.php on line 8
+[16-May-2023 10:11:43 UTC] PHP Parse error:  syntax error, unexpected token "." in /home/aijk/public_html/autogpt/back.php on line 8
+[16-May-2023 10:11:59 UTC] PHP Parse error:  syntax error, unexpected token "." in /home/aijk/public_html/autogpt/back.php on line 8
+[16-May-2023 10:12:10 UTC] PHP Parse error:  syntax error, unexpected token "." in /home/aijk/public_html/autogpt/back.php on line 8
+[16-May-2023 10:12:11 UTC] PHP Parse error:  syntax error, unexpected token "." in /home/aijk/public_html/autogpt/back.php on line 8
+[16-May-2023 10:12:19 UTC] PHP Parse error:  syntax error, unexpected token "." in /home/aijk/public_html/autogpt/back.php on line 8
+[16-May-2023 10:12:24 UTC] PHP Parse error:  syntax error, unexpected token "." in /home/aijk/public_html/autogpt/back.php on line 8
+[16-May-2023 10:19:14 UTC] PHP Parse error:  syntax error, unexpected variable "$id" in /home/aijk/public_html/autogpt/back.php on line 53
+[16-May-2023 10:19:29 UTC] PHP Warning:  Undefined variable $filePath in /home/aijk/public_html/autogpt/back.php on line 53
+[16-May-2023 10:19:29 UTC] PHP Warning:  Undefined variable $filePath in /home/aijk/public_html/autogpt/back.php on line 54
+[16-May-2023 10:19:29 UTC] PHP Warning:  Array to string conversion in /home/aijk/public_html/autogpt/back.php on line 54
+[16-May-2023 10:21:36 UTC] PHP Warning:  Array to string conversion in /home/aijk/public_html/autogpt/back.php on line 54
+[16-May-2023 10:22:32 UTC] PHP Warning:  Array to string conversion in /home/aijk/public_html/autogpt/back.php on line 54
+[16-May-2023 10:22:32 UTC] PHP Warning:  Array to string conversion in /home/aijk/public_html/autogpt/back.php on line 61
+[16-May-2023 11:08:20 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home/aijk/public_html/autogpt/back.php:57) in /home/aijk/public_html/autogpt/back.php on line 18
+[16-May-2023 11:10:37 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home/aijk/public_html/autogpt/back.php:53) in /home/aijk/public_html/autogpt/back.php on line 18

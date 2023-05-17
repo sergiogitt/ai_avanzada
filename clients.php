@@ -16,11 +16,11 @@
 <div id="wrapper">
 <h1>Auto GPT</h1>
 <?php
-$view="client";
+$view="clients";
     require "views/header.php";
 ?>
     <div id="user_wrapp">
-        <button class="new_button shadow" onClick="security(create_user_form)" id="new_user_button">Add new user</button>
+        <button class="new_button shadow" onClick="security(create_user_form)" id="new_user_button" class="new_button">Add new user</button>
     </div>
     
     

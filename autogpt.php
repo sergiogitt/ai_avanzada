@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- Hello -->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -17,6 +18,7 @@
 <div id="wrapper">
 <h1>Auto GPT</h1>
 <?php
+$view="gpt";
     require "views/header.php";
 ?>
 

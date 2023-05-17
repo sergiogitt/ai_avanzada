@@ -11,6 +11,7 @@
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+   
 </head>
 <body onload="security(load_files)">
 <div id="wrapper">
@@ -20,13 +21,17 @@ $view="files";
     require "views/header.php";
 ?>
     <div id="user_wrapp">
-        <button class="new_button shadow" onClick="security(create_user_form)" id="new_user_button">Add new user</button>
+   
+        <button class="new_button shadow" onClick="security(add_file_form)" id="form_file_button" class="new_button">Add file</button>
+            
+    
+       
     </div>
     
     
 </div>
 </body>
-<script src="blackbox_clients.js">
+<script src="blackbox_addfiles.js">
     
-</script>
+    </script>
 </html>

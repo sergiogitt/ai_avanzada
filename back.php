@@ -1,26 +1,33 @@
 <?php
 require "src/bd_config.php";
-if(isset($_FILES["file"])){
+ini_set('display_errors', 1);
+
+if(isset($_FILES["fileInput"])){
     try
     {
-        var_dump($_FILES);
-        $nombreArchivo = $_FILES["file"]['name'];
-        $rutaArchivoTemp = $_FILES["file"]['tmp_name'];
-        $rutaArchivoDestino = "./uploaded_files" . '/' . $nombreArchivo;
-        
+        $name_without_extension= pathinfo(str_replace(' ', '-', $_FILES["fileInput"]['name']), PATHINFO_FILENAME);
+        $new_file_name = $_POST["id"]."_".$name_without_extension."_".time();
+        $folder_user="./uploaded_files/".$_POST["id"]."-files";
+        $rutaArchivoTemp = $_FILES["fileInput"]['tmp_name'];
+        $rutaArchivoDestino = $folder_user."/". $new_file_name;
+        if(!is_dir($folder_user)){
+            mkdir($folder_user);
+        }
         if (move_uploaded_file($rutaArchivoTemp, $rutaArchivoDestino)) {
-            header('Location: index.php');
+            insert_file_on_db($rutaArchivoDestino,$_POST["id"]);
+            header('Location: addfiles.php');
             exit;
         } else {
-            return json_encode(["error"=>"Something went wrong on the uploady"]);;
+            return json_encode(["error"=>"Something went wrong on the upload"]);
         }
         echo $conection->lastInsertId();
     }
     catch(PDOException $e)
     {     
-        echo "Cant execute the querys. Error:".$e->getMessage();
+        echo "Can't execute the queries. Error: ".$e->getMessage();
     }
 }
+
 
 $data = json_decode(file_get_contents('php://input'), true);
 if(isset($data['functionName'])){
@@ -30,6 +37,47 @@ if(isset($data['functionName'])){
         $result = call_user_func_array($functionName, $args);
         
     } 
+}
+function insert_file_on_db($location,$id){
+    try
+    {
+        $conection=start_conection();
+        $query="insert into tbl_file (file_location, file_owner_id) values (?,?)";
+        $sentence=$conection->prepare($query);
+ 
+        $data[]=$location;
+        $data[]=$id;
+       
+        $sentence->execute($data);
+
+       
+    }
+    catch(PDOException $e)
+    {     
+        echo "Cant execute the query. Error:".$e->getMessage();
+    }
+}
+function create_file_table(){
+    try
+    {
+        $conection=start_conection();
+        $query='CREATE TABLE if not exists tbl_file  (
+            file_id INT AUTO_INCREMENT PRIMARY KEY,
+            file_location VARCHAR(255),
+            file_owner_id INT,
+            FOREIGN KEY (file_owner_id) REFERENCES tbl_users(ID)
+          );';
+        $sentence=$conection->prepare($query);
+ 
+       
+        $sentence->execute([]);
+
+       
+    }
+    catch(PDOException $e)
+    {     
+        echo json_encode(["error"=>"Cant execute the query. Error:".$e->getMessage()]);
+    }
 }
 
 
@@ -42,6 +90,40 @@ function start_conection(){
         exit("Connection error: " . $e->getMessage());
     }
     return $conection;
+}
+function deleteFile($file,$id){
+    $filePath="./uploaded_files/".$id."-files/";
+    if (file_exists($filePath.$file[0])) {
+        if (unlink($filePath.$file[0])) {
+            echo  json_encode(["file_deleted"=>"File deleted successfully."]);
+        } else {
+            echo  json_encode(["error"=>"Unable to delete the file."]);
+        }
+    } else {
+        echo  json_encode(["not_found"=>$filePath.$file[0]]);
+    }
+
+    
+}
+function getFIles($id){
+    create_file_table();
+    $folder_user="./uploaded_files/".$id."-files";
+    // Obtener el listado de archivos y directorios en el directorio especificado
+    $files=[];
+    if(is_dir($folder_user)){
+        $archivos = scandir($folder_user);
+        
+        // Recorrer el listado de archivos y directorios
+        foreach ($archivos as $archivo) {
+            // Excluir los directorios "." y ".."
+            if ($archivo !== '.' && $archivo !== '..') {
+                // Realizar alguna acción con el archivo
+            $files[]=$archivo;
+            }
+        }
+    }
+    
+    echo json_encode($files);
 }
 function insertNewInitialPrompt($prompt,$iteration,$user_id){
     try
@@ -82,6 +164,7 @@ function insertNewIterationPrompt($id_prompt,$iteration,$prompt){
         echo "Cant execute the querys. Error:".$e->getMessage();
     }
 }
+
 function updateInitialPrompt($prompt,$prompt_id){
     try
     {
@@ -166,6 +249,8 @@ function logUser($user,$password){
    }
 
 }
+
+
 function getSecondData($prompt_id){
     try
    {
@@ -277,6 +362,7 @@ function get_company($new_companie ,$description1,$description2,$name,$tags){
    }
 
 }
+
 if(isset($_POST['delete_user'])){
     try
    {

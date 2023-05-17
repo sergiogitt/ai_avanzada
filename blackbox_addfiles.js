@@ -7,8 +7,14 @@ setTimeout(function () {
     // Reload the current page
     location.reload();
 }, 300000);
+if (!sessionStorage.actual_view) {
+    sessionStorage.setItem("actual_view", "files");
+} else {
+    sessionStorage.actual_view = "users";
+    document.getElementById("files_menu").setAttribute("class", 'selected')
+}
+const TIME_SESSION_EXPIRED = 10;
 function security(todo,params=null){  
-    console.log(sessionStorage.last_action)
     if(((new Date()/1000)-sessionStorage.last_action)<TIME_SESSION_EXPIRED*60){
         api_call("back.php",JSON.stringify({functionName: 'logUser', args: [sessionStorage.user,sessionStorage.password]}),{},analize_security_response,[todo,params]);
     }
@@ -23,34 +29,102 @@ function security(todo,params=null){
     }
 }
 function add_file(){
-    let file=document.getElementById(file_id);
+    let file=document.getElementById("fileInput");
     let error_message=document.getElementById("error_message");
     let files_allowed=["application/pdf","text/plain","application/vnd.openxmlformats-officedocument.wordprocessingml.document"];
-    
+    console.log("inserting submit")
     if(file.files.length>0){
         if(files_allowed.includes(file.files[0].type)){
-            console.log("inserting file")
-            /*const formData = new FormData();
-            formData.append('file', file);
-            api_call("back.php", JSON.stringify({functionName: 'save_file', args: [formData]}))*/
-            const formData = new FormData();
-            formData.append('file', file.files[0]);
-            formData.append("name", "file");
-            api_call('back.php', JSON.stringify({functionName: 'save_file', args: [formData]}), {});
+            console.log("inserting submit")
+            document.getElementById("form").submit();
+            
 
         }else{
+            
             error_message.innerHTML="File not supported";
         }
         
+    }else{
+        error_message.innerHTML="File not selected";
     }
+}
+function select_file(){
+ document.getElementById("fileInput").click();
 }
 function add_file_form() {
     var newDiv = document.createElement("div");
-    newDiv.setAttribute("id", "new_file_form");
-    document.getElementById("new_file_button").setAttribute('disabled', true);
-    newDiv.innerHTML = "<h3>New File Form</h3><input type='file' id='new_file'/><button class='btn btn-info' onClick='security(add_file,null)'>Upload file</button>";
+    var wrapper= document.getElementById("user_wrapp");
+    newDiv.setAttribute("id", "new_user_form");
+    document.getElementById("form_file_button").setAttribute('disabled', true);
+    newDiv.innerHTML = "<h3>New File Form</h3><button onCLick='select_file()' id='file'/>Select a file</button><p id='error_message'></p><form action='back.php' id='form' method='post' enctype='multipart/form-data'><input type='file' id='fileInput' name='fileInput' hidden/><input type='hidden' name='id' value='"+sessionStorage.ID+"'></form><button class='btn btn-info' onClick='security(add_file,null)'>Upload file</button>";
     wrapper.appendChild(newDiv);
 }
+function api_call(url, body_content, header_content, todo = null, args) {
+    fetch(url, {
+        headers: header_content,
+        method: 'POST',
+        body: body_content,
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (todo) {
+                todo(data, args);
+            }
+
+        }
+        )
+        .catch(error => console.error(error));
+}
+
+function analize_security_response(data, ar) {
+    if (data.ID) {
+        sessionStorage.last_action = new Date() / 1000;
+        if (ar[0]) {
+            ar[0](ar[1])
+        }
+
+    } else if (data.not_found) {
+        window.location.href = "login_agpt.php"; // redirect to login page
+        sessionStorage.clear();
+    } else if (data.internal_error) {
+        sessionStorage.clear();
+    }
+}
+function delete_file(file){
+    api_call('back.php', JSON.stringify({functionName: 'deleteFile', args: [file,sessionStorage.ID]}), {},reload_page,null);
+}
+function reload_page(){
+    console.log("recargando");
+    window.location.href = "addfiles.php";
+}
+function show_files(data){
+    var wrapper= document.getElementById("user_wrapp");
+    var newTable = document.createElement("ul");
+    newTable.id = "list_of_users";
+    data.forEach(element => {
+        var newRow = document.createElement("li");
+        newRow.setAttribute("class", "user");
+
+        var link = document.createElement("div");
+        var name = document.createTextNode(element);
+        var newColumn2 = document.createElement("div");
+        newColumn2.setAttribute("id", "name_user_" + element.ID);
+        var id = document.createTextNode(element.ID);
+        link.appendChild(name);
+
+
+
+        newColumn2.appendChild(link);
+        newRow.appendChild(newColumn2);
+        newTable.appendChild(newRow);
+        if (sessionStorage.rol == "admin") {
+           
+            let actionButton = "<div id='action_button_" + element.ID + "'><button class='button_link' onClick=\"security(delete_file,['" + element + "'])\">Delete</button></div>";
+            newRow.innerHTML += actionButton;
+        }
+        wrapper.appendChild(newTable);
+    });
+}
 function load_files(){
-    console.log("cargando archivos")
+    api_call('back.php', JSON.stringify({functionName: 'getFiles', args: [sessionStorage.ID]}), {},show_files);
 }

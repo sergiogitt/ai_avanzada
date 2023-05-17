@@ -18,7 +18,7 @@ div#user_wrapp{
     flex-direction: column;
     padding: 1rem 2rem;
 }
-div#user_wrapp button#new_user_button{
+div#user_wrapp button.new_button{
     align-self: flex-end;  
 }
 ul#list_of_users{
