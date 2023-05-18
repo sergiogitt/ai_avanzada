@@ -2,31 +2,6 @@
 require "src/bd_config.php";
 ini_set('display_errors', 1);
 
-if(isset($_FILES["fileInput"])){
-    try
-    {
-        $name_without_extension= pathinfo(str_replace(' ', '-', $_FILES["fileInput"]['name']), PATHINFO_FILENAME);
-        $new_file_name = $_POST["id"]."_".$name_without_extension."_".time();
-        $folder_user="./uploaded_files/".$_POST["id"]."-files";
-        $rutaArchivoTemp = $_FILES["fileInput"]['tmp_name'];
-        $rutaArchivoDestino = $folder_user."/". $new_file_name;
-        if(!is_dir($folder_user)){
-            mkdir($folder_user);
-        }
-        if (move_uploaded_file($rutaArchivoTemp, $rutaArchivoDestino)) {
-            insert_file_on_db($rutaArchivoDestino,$_POST["id"]);
-            header('Location: addfiles.php');
-            exit;
-        } else {
-            return json_encode(["error"=>"Something went wrong on the upload"]);
-        }
-        echo $conection->lastInsertId();
-    }
-    catch(PDOException $e)
-    {     
-        echo "Can't execute the queries. Error: ".$e->getMessage();
-    }
-}
 
 
 $data = json_decode(file_get_contents('php://input'), true);
@@ -37,6 +12,39 @@ if(isset($data['functionName'])){
         $result = call_user_func_array($functionName, $args);
         
     } 
+}
+function saveFile($content,$name,$id){
+    
+    try
+    {
+        $folder_user="./uploaded_files/".$id."-files";
+        $name=explode(".",str_replace(' ', '-', $name))[0];
+        $new_file_name = $id."_".$name."_".time();
+        /*$name_without_extension= pathinfo(str_replace(' ', '-', $_FILES["fileInput"]['name']), PATHINFO_FILENAME);
+        $new_file_name = $_POST["id"]."_".$name_without_extension."_".time();
+       
+        $rutaArchivoTemp = $_FILES["fileInput"]['tmp_name'];
+        $rutaArchivoDestino = $folder_user."/". $new_file_name;*/
+        if(!is_dir($folder_user)){
+            mkdir($folder_user);
+        }
+        $file = $folder_user."/".$new_file_name;  // Specify the file path and name
+
+        // Write the content to the file
+        $result = file_put_contents($file, $content);
+
+        // Check if the operation was successful
+        if ($result !== false) {
+            echo json_encode(["error"=> 'File created and content saved successfully.']);
+        } else {
+            echo json_encode(["error"=>  'Failed to create the file or save the content.']);
+        }
+       
+    }
+    catch(PDOException $e)
+    {     
+        echo "Can't execute the queries. Error: ".$e->getMessage();
+    }
 }
 function insert_file_on_db($location,$id){
     try

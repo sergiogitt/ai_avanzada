@@ -1,4 +1,5 @@
 
+
 if (!sessionStorage.ID) {
     window.location.href = "login_agpt.php"; // redirect to login page
 }
@@ -14,49 +15,107 @@ if (!sessionStorage.actual_view) {
     document.getElementById("files_menu").setAttribute("class", 'selected')
 }
 const TIME_SESSION_EXPIRED = 10;
-function security(todo,params=null){  
-    if(((new Date()/1000)-sessionStorage.last_action)<TIME_SESSION_EXPIRED*60){
-        api_call("back.php",JSON.stringify({functionName: 'logUser', args: [sessionStorage.user,sessionStorage.password]}),{},analize_security_response,[todo,params]);
+function security(todo, params = null) {
+    if (((new Date() / 1000) - sessionStorage.last_action) < TIME_SESSION_EXPIRED * 60) {
+        api_call("back.php", JSON.stringify({ functionName: 'logUser', args: [sessionStorage.user, sessionStorage.password] }), {}, analize_security_response, [todo, params]);
     }
-    else
-    {
+    else {
         sessionStorage.clear();
-        sessionStorage.setItem("error","Session expired, log again");
+        sessionStorage.setItem("error", "Session expired, log again");
         window.location.href = "login_agpt.php"; // redirect to login page
 
         console.log("no cumple tmepo")
-        
-    }
-}
-function add_file(){
-    let file=document.getElementById("fileInput");
-    let error_message=document.getElementById("error_message");
-    let files_allowed=["application/pdf","text/plain","application/vnd.openxmlformats-officedocument.wordprocessingml.document"];
-    console.log("inserting submit")
-    if(file.files.length>0){
-        if(files_allowed.includes(file.files[0].type)){
-            console.log("inserting submit")
-            document.getElementById("form").submit();
-            
 
-        }else{
-            
-            error_message.innerHTML="File not supported";
-        }
-        
-    }else{
-        error_message.innerHTML="File not selected";
     }
 }
-function select_file(){
- document.getElementById("fileInput").click();
+function converPDFintoText() {
+    var fileInput = document.getElementById("fileInput");
+    var file = fileInput.files[0];
+
+    var reader = new FileReader();
+
+    reader.onload = function (event) {
+        var buffer = event.target.result;
+
+        // Load the PDF from the ArrayBuffer
+        pdfjsLib.getDocument(buffer).promise.then(function (pdf) {
+            // Get the first page of the PDF
+            pdf.getPage(1).then(function (page) {
+                // Extract the text content from the page
+                page.getTextContent().then(function (textContent) {
+                    // Concatenate the text items to form the complete text
+                    var text = "";
+                    textContent.items.forEach(function (item) {
+                        text += item.str + " ";
+                    });
+
+                    // Output the extracted text
+                    console.log(text);
+                    console.log(file)
+                    api_call('back.php', JSON.stringify({ functionName: 'saveFile', args: [text, file.name, sessionStorage.ID] }), {}, reload_page, null);
+                });
+            });
+        }).catch(function (error) {
+            console.error("Error loading PDF: " + error);
+        });
+    };
+
+    reader.readAsArrayBuffer(file);
+}
+function add_file() {
+
+    var file = document.getElementById("fileInput");
+    // let file=document.getElementById("fileInput");
+    let error_message = document.getElementById("error_message");
+    let files_allowed = ["application/pdf", "text/plain", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"];
+    console.log("inserting submit")
+    if (file.files.length > 0) {
+
+        if (files_allowed.includes(file.files[0].type)) {
+            switch (file.files[0].type) {
+                case "application/pdf":
+                    converPDFintoText()
+                    break;
+
+                case "text/plain":
+                    console.log("txt")
+                    var file = document.getElementById("fileInput").files[0];
+
+                    var reader = new FileReader();
+
+                    reader.onload = function (event) {
+                        var fileContent = event.target.result;
+                        api_call('back.php', JSON.stringify({ functionName: 'saveFile', args: [fileContent, file.name, sessionStorage.ID] }), {}, reload_page, null);
+                        // Perform further operations with the file content
+                    };
+
+                    reader.readAsText(file);
+
+
+                    break;
+            }
+
+
+
+
+        } else {
+
+            error_message.innerHTML = "File not supported";
+        }
+
+    } else {
+        error_message.innerHTML = "File not selected";
+    }
+}
+function select_file() {
+    document.getElementById("fileInput").click();
 }
 function add_file_form() {
     var newDiv = document.createElement("div");
-    var wrapper= document.getElementById("user_wrapp");
+    var wrapper = document.getElementById("user_wrapp");
     newDiv.setAttribute("id", "new_user_form");
     document.getElementById("form_file_button").setAttribute('disabled', true);
-    newDiv.innerHTML = "<h3>New File Form</h3><button onCLick='select_file()' id='file'/>Select a file</button><p id='error_message'></p><form action='back.php' id='form' method='post' enctype='multipart/form-data'><input type='file' id='fileInput' name='fileInput' hidden/><input type='hidden' name='id' value='"+sessionStorage.ID+"'></form><button class='btn btn-info' onClick='security(add_file,null)'>Upload file</button>";
+    newDiv.innerHTML = "<h3>New File Form</h3><button onCLick='select_file()' id='file'/>Select a file</button><p id='error_message'></p><form action='back.php' id='form' method='post' enctype='multipart/form-data'><input type='file' id='fileInput' name='fileInput' hidden/><input type='hidden' name='id' value='" + sessionStorage.ID + "'></form><button class='btn btn-info' onClick='security(add_file,null)'>Upload file</button>";
     wrapper.appendChild(newDiv);
 }
 function api_call(url, body_content, header_content, todo = null, args) {
@@ -90,15 +149,15 @@ function analize_security_response(data, ar) {
         sessionStorage.clear();
     }
 }
-function delete_file(file){
-    api_call('back.php', JSON.stringify({functionName: 'deleteFile', args: [file,sessionStorage.ID]}), {},reload_page,null);
+function delete_file(file) {
+    api_call('back.php', JSON.stringify({ functionName: 'deleteFile', args: [file, sessionStorage.ID] }), {}, reload_page, null);
 }
-function reload_page(){
+function reload_page() {
     console.log("recargando");
     window.location.href = "addfiles.php";
 }
-function show_files(data){
-    var wrapper= document.getElementById("user_wrapp");
+function show_files(data) {
+    var wrapper = document.getElementById("user_wrapp");
     var newTable = document.createElement("ul");
     newTable.id = "list_of_users";
     data.forEach(element => {
@@ -118,13 +177,13 @@ function show_files(data){
         newRow.appendChild(newColumn2);
         newTable.appendChild(newRow);
         if (sessionStorage.rol == "admin") {
-           
+
             let actionButton = "<div id='action_button_" + element.ID + "'><button class='button_link' onClick=\"security(delete_file,['" + element + "'])\">Delete</button></div>";
             newRow.innerHTML += actionButton;
         }
         wrapper.appendChild(newTable);
     });
 }
-function load_files(){
-    api_call('back.php', JSON.stringify({functionName: 'getFiles', args: [sessionStorage.ID]}), {},show_files);
+function load_files() {
+    api_call('back.php', JSON.stringify({ functionName: 'getFiles', args: [sessionStorage.ID] }), {}, show_files);
 }

@@ -49,10 +49,10 @@ $view="gpt";
                             <select id="model">
                                 <option value="gpt-3.5-turbo">gpt-3.5-turbo</option>
                                 <option value="gpt-3.5-turbo-0301">gpt-3.5-turbo-0301</option>
-                                <option value="gpt-4" disabled>gpt-4</option>
-                                <option value="gpt-4-0314" disabled>gpt-4-0314</option>
-                                <option value="gpt-4-32k" disabled>gpt-4-32k</option>
-                                <option value="gpt-4-32k-0314" disabled>gpt-4-32k-0314</option>
+                                <option value="gpt-4" >gpt-4</option>
+                                <option value="gpt-4-0314" >gpt-4-0314</option>
+                                <option value="gpt-4-32k" >gpt-4-32k</option>
+                                <option value="gpt-4-32k-0314" >gpt-4-32k-0314</option>
                                 
                                 
                             </select>
@@ -86,6 +86,7 @@ $view="gpt";
     
 </div>
 </body>
+<script src="pdf.js"></script>
 <script src="blackbox.js">    
 </script>
 <script>
