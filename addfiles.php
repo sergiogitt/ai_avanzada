@@ -23,8 +23,12 @@ $view="files";
     require "views/header.php";
 ?>
     <div id="user_wrapp">
+        <div id="buttons">
+        <button class="new_button shadow" onClick="security(merge_files)" id="merge_files_button" disabled class="new_button">Merge files</button>
    
-        <button class="new_button shadow" onClick="security(add_file_form)" id="form_file_button" class="new_button">Add file</button>
+   <button class="new_button shadow" onClick="security(add_file_form)" id="form_file_button" class="new_button">Add file</button>
+        </div>
+        
             
     
        

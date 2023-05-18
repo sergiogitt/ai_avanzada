@@ -46,6 +46,35 @@ function saveFile($content,$name,$id){
         echo "Can't execute the queries. Error: ".$e->getMessage();
     }
 }
+function mergeFiles($id){
+    
+    try
+    {
+        $folder_user="./uploaded_files/".$id."-files";
+        $files = scandir($folder_user);
+        $mergedContent = ''; // Variable to store the merged content
+
+        foreach ($files as $file) {
+            if ($file !== '.' && $file !== '..') {
+                // Read the content of each file
+                $content = file_get_contents($folder_user ."/". $file);
+                
+                // Append the content to the merged content variable
+                $mergedContent .= $content." ";
+                unlink($folder_user ."/". $file);
+            }
+        }
+        $mergedFilePath =$folder_user."/".$id."_merged_".time();
+
+        file_put_contents($mergedFilePath, $mergedContent);
+        echo json_encode(["correct"=> 'Merged']);
+
+    }
+    catch(PDOException $e)
+    {     
+        echo "Can't execute the queries. Error: ".$e->getMessage();
+    }
+}
 function insert_file_on_db($location,$id){
     try
     {

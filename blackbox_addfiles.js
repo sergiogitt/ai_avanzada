@@ -62,6 +62,9 @@ function converPDFintoText() {
 
     reader.readAsArrayBuffer(file);
 }
+function merge_files(){
+    api_call('back.php', JSON.stringify({ functionName: 'mergeFiles', args: [sessionStorage.ID] }), {});
+}
 function add_file() {
 
     var file = document.getElementById("fileInput");
@@ -160,6 +163,9 @@ function show_files(data) {
     var wrapper = document.getElementById("user_wrapp");
     var newTable = document.createElement("ul");
     newTable.id = "list_of_users";
+    if(data.length>1){
+        document.getElementById("merge_files_button").removeAttribute("disabled");
+    }
     data.forEach(element => {
         var newRow = document.createElement("li");
         newRow.setAttribute("class", "user");

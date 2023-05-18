@@ -21,6 +21,14 @@ div#user_wrapp{
 div#user_wrapp button.new_button{
     align-self: flex-end;  
 }
+#buttons{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+button:disabled{
+    background-color: red !important;
+}
 ul#list_of_users{
     padding: 0;
 }
