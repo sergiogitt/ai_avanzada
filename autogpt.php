@@ -38,7 +38,7 @@ $view="gpt";
                     <button type="submit" class="button_link" onclick="security(send_ai)">RUN</button>
                     <button type="button" class="button_link" onclick="security(delete_interaction())">DELETE</button>
                 </div>
-                <textarea id="prompt1" oninput="security(inserting_into_db,[1])" ></textarea>
+                <textarea id="prompt1" oninput="security(inserting_into_db,[number_actual_block])" ></textarea>
                 <p id="error_message"></p>
             </div>
             <div id="output">
@@ -59,8 +59,8 @@ $view="gpt";
                         </div>
                     </div>
                     <div class="spaced_inputs">
-                        <label for="memmory">INCLUDE FILES AS MEMORY</label>
-                        <div><input type="checkbox" id="memmory"></div>
+                        <label for="memmory" >INCLUDE FILES AS MEMORY</label>
+                        <div><input type="checkbox" id="memory"></div>
                     </div>
                     <div class="spaced_inputs">
                         <label for="changes">SUGGEST CHANGES</label>

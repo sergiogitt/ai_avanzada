@@ -63,7 +63,7 @@ function converPDFintoText() {
     reader.readAsArrayBuffer(file);
 }
 function merge_files(){
-    api_call('back.php', JSON.stringify({ functionName: 'mergeFiles', args: [sessionStorage.ID] }), {});
+    api_call('back.php', JSON.stringify({ functionName: 'mergeFiles', args: [sessionStorage.ID] }), {},reload_page,null);
 }
 function add_file() {
 

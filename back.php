@@ -20,11 +20,6 @@ function saveFile($content,$name,$id){
         $folder_user="./uploaded_files/".$id."-files";
         $name=explode(".",str_replace(' ', '-', $name))[0];
         $new_file_name = $id."_".$name."_".time();
-        /*$name_without_extension= pathinfo(str_replace(' ', '-', $_FILES["fileInput"]['name']), PATHINFO_FILENAME);
-        $new_file_name = $_POST["id"]."_".$name_without_extension."_".time();
-       
-        $rutaArchivoTemp = $_FILES["fileInput"]['tmp_name'];
-        $rutaArchivoDestino = $folder_user."/". $new_file_name;*/
         if(!is_dir($folder_user)){
             mkdir($folder_user);
         }
@@ -67,7 +62,26 @@ function mergeFiles($id){
         $mergedFilePath =$folder_user."/".$id."_merged_".time();
 
         file_put_contents($mergedFilePath, $mergedContent);
-        echo json_encode(["correct"=> 'Merged']);
+        //echo json_encode(["correct"=> 'Merged']);
+
+    }
+    catch(PDOException $e)
+    {     
+        echo "Can't execute the queries. Error: ".$e->getMessage();
+    }
+}
+function getMemory($id){
+    
+    try
+    {
+        $folder_user="./uploaded_files/".$id."-files";
+        $files = scandir($folder_user);
+        if(count($files)>1){
+            mergeFiles($id);
+        }
+        $file = scandir($folder_user)[2];
+        $content = file_get_contents($folder_user ."/". $file);
+        echo json_encode(["memory"=> $content]);
 
     }
     catch(PDOException $e)

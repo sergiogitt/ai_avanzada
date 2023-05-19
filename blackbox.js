@@ -72,19 +72,36 @@
         }
         function create_new_iteration_button(data,create_button=false){
             if(!create_button){
-                data.forEach(element => {
+                if(Array.isArray(data)){
+                    data.forEach(element => {
+                        var newIteration = document.createElement("button");
+                        newIteration.setAttribute("id", "iteration"+number_new_block);
+                        newIteration.setAttribute("class", "iteration_button shadow");
+                        newIteration.setAttribute("onClick", `load_iteration_data('${number_new_block}')`);
+                        var tex=document.createTextNode("ITERATION"+number_new_block)
+                        newIteration.append(tex)
+                        document.getElementById("iterations").append(newIteration);
+                        number_actual_block++;
+                        number_new_block++;
+        
+                    });
+                    fill_all_info(data)
+                }else{
                     var newIteration = document.createElement("button");
                     newIteration.setAttribute("id", "iteration"+number_new_block);
                     newIteration.setAttribute("class", "iteration_button shadow");
                     newIteration.setAttribute("onClick", `load_iteration_data('${number_new_block}')`);
-                    var tex=document.createTextNode("ITERATION"+number_new_block)
+                    var tex=document.createTextNode("ITERATION"+number_new_block);
                     newIteration.append(tex)
                     document.getElementById("iterations").append(newIteration);
                     number_actual_block++;
                     number_new_block++;
-    
-                });
-                fill_all_info(data)
+                    all_data_from_db.push(data);
+                    control_insertion_prompts[number_new_block]=false;
+                    
+                }
+               
+               
             }else{
                 let empty_field=all_data_from_db.findIndex(e=>e=='');
                 console.log(all_data_from_db)
@@ -138,12 +155,9 @@
                 for (let i = 0; i < buttons_to_disable.length; i++) {
                     buttons_to_disable[i].setAttribute('disabled', true);
                 }
-                const REACT_APP_OPENAI_API_KEY="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";
                // Define the data variable with prompt and API parameters
-               const API_ENDPOINT = "https://api.openai.com/v1/chat/completions";
 
                 let urls_found=containsURL(prompt_content);
-                let header={ "Content-Type": "application/json","Authorization": "Bearer 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"};
                 if(urls_found!=null){
                     
                     fetch('apis.php', {
@@ -185,22 +199,17 @@
                         }
                         ).then( response=>{
                             
-                            api_call(API_ENDPOINT, JSON.stringify({
-                                "model": model_choiced,
-                                "messages": [{"role": "user", "content": prompt_content}],
-                                "temperature": 0.7
-                            }), header, disable_actions_on_call,number);
+                            get_memory(prompt_content,model_choiced,number);
+                           
                     })
                         .catch(error => console.error(error)
                     );  
                     
                 }else{
+                    let prompt_content=document.getElementById(prompt_id).value;
+                    get_memory(prompt_content,model_choiced,number);
+                  //  openai_call(prompt_content,model_choiced,number)
                    
-                    api_call(API_ENDPOINT, JSON.stringify({
-                        "model": model_choiced,
-                        "messages": [{"role": "user", "content": prompt_content}],
-                        "temperature": 0.7
-                    }), header, disable_actions_on_call,number);
 
                     
                     
@@ -211,6 +220,30 @@
                 document.getElementById(action).innerHTML ="Please type something";
             }
             
+        }
+        function get_memory(prompt_content,model,number){
+            api_call("back.php", JSON.stringify({functionName: 'getMemory', args: [sessionStorage.ID]}),{},openai_call,[prompt_content,model,number])
+
+        }
+        function show(data){
+            console.log(data)
+        }
+        function openai_call(data,ar){
+            const API_ENDPOINT = "https://api.openai.com/v1/chat/completions";
+
+            let header={ "Content-Type": "application/json","Authorization": "Bearer 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"};
+            if(document.getElementById("memory").checked){
+                console.log("chequeado")
+                if(data.memory){
+                    ar[0]=data.memory+ar[0];
+                }
+            }
+            
+            api_call(API_ENDPOINT, JSON.stringify({
+                "model": ar[1],
+                "messages": [{"role": "user", "content": ar[0]}],
+                "temperature": 0.7
+            }), header, disable_actions_on_call,ar[2]);
         }
         function analise_files(number){
             let file_id="file"+number;
@@ -271,6 +304,7 @@
             )
             .catch(error => console.error(error));
         }
+        console.log(number_actual_block)
         
         function disable_actions_on_call(data,number){
             let prompt_id="prompt1";
@@ -286,10 +320,16 @@
             let num=number;
             num++;
             let next_prompt="prompt"+(num);
-            if(document.getElementById(next_prompt)==null){
-                create_new_prompts_inputs(false);
+            let next=number_actual_block++;
+            console.log(number_actual_block)
+           console.log(all_data_from_db)
+           console.log(next)
+          
+            if(all_data_from_db.length<=number_actual_block){
+                console.log("creando nuevo")
+               create_new_iteration_button(data.choices[0].message.content)
 
-                api_call("back.php", JSON.stringify({functionName: 'insertNewIterationPrompt', args: [ ids_prompts[1] ,num,content]}),{})
+                api_call("back.php", JSON.stringify({functionName: 'insertNewIterationPrompt', args: [ ids_prompts[1] ,number_actual_block-2,content]}),{})
                 control_insertion_prompts[number]=false;
             }
             document.getElementById(next_prompt).value=document.getElementById(next_prompt).value+"\nAPI RESPONE: "+content;
