@@ -2,14 +2,14 @@
 
     
     if(!sessionStorage.ID){
-        window.location.href = "login_agpt.php"; // redirect to login page
+       // window.location.href = "login_agpt.php"; // redirect to login page
     }
     // Set a timeout of 5 minutes (300000 milliseconds)
     setTimeout(function() {
         // Reload the current page
         location.reload();
     }, 300000);
-  
+  console.log(sessionStorage)
     const TIME_SESSION_EXPIRED=10;
     const CUSTOMER_ID=sessionStorage.ID;
         let number_actual_block=1;
@@ -22,17 +22,15 @@
         let companies_found=[];
         let all_data_from_db=["empty"];
         let number_iteration_watching=1;
+        let iterarion_id=[null,null];
         let buttons_to_disable=document.getElementsByTagName('button');
         function get_actual_data_user(){
             let user;
-            console.log("fovk")
             if(sessionStorage.auto_gpt_view_user){
                 user=sessionStorage.auto_gpt_view_user;
             }else{
                 user=CUSTOMER_ID;
-            }
-            console.log(user)
-            
+            }            
             api_call("back.php",JSON.stringify({functionName: 'getFirstData', args: [user]}),{},fill_first_field_with_data,null);
         }
         function fill_first_field_with_data(answer){
@@ -46,7 +44,6 @@
                 api_call("back.php",JSON.stringify({functionName: 'getSecondData', args: [ids_prompts[1]]}),{},create_new_iteration_button);
                
             }else{
-                console.log("erg")
                 ids_prompts[1]="";
                 all_data_from_db.push("")
                 document.getElementById("prompt1").value="";
@@ -57,7 +54,9 @@
                     all_data_from_db.push(element.prompt_content)
                     //Adding new element to the array which contorls the insertions or updates of the prompts
                     control_insertion_prompts[number_actual_block]=false;
+                    iterarion_id.push(element.prompt_iteration)
                 });
+                console.log(iterarion_id)
         }
         function load_iteration_data(number){
             let input=document.getElementById("prompt1");
@@ -198,8 +197,12 @@
                             });                            
                         }
                         ).then( response=>{
-                            
-                            get_memory(prompt_content,model_choiced,number);
+                            if(document.getElementById("memory").checked){
+                                get_memory("Here is some info that im going to ask for:"+prompt_content+"   ",model_choiced,number);
+                            }else{
+                                openai_call(null,[prompt_content,model_choiced,number])
+                            }
+                           
                            
                     })
                         .catch(error => console.error(error)
@@ -207,7 +210,12 @@
                     
                 }else{
                     let prompt_content=document.getElementById(prompt_id).value;
-                    get_memory(prompt_content,model_choiced,number);
+                    if(document.getElementById("memory").checked){
+                        get_memory("Here is some info that im going to ask for:"+prompt_content+"   ",model_choiced,number);
+                    }else{
+                        openai_call(null,[prompt_content,model_choiced,number])
+                    }
+                  // get_memory(prompt_content,model_choiced,number);
                   //  openai_call(prompt_content,model_choiced,number)
                    
 
@@ -230,8 +238,16 @@
         }
         function openai_call(data,ar){
             const API_ENDPOINT = "https://api.openai.com/v1/chat/completions";
-
-            let header={ "Content-Type": "application/json","Authorization": "Bearer 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"};
+            let header;
+            if(sessionStorage.auto_gpt_view_user_key){
+                if(sessionStorage.auto_gpt_view_user_key=="Deffault"){
+                    header={ "Content-Type": "application/json","Authorization": "Bearer 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"};
+                }else{
+                    header={ "Content-Type": "application/json","Authorization": "Bearer "+sessionStorage.auto_gpt_view_user_key};
+                }
+            }else{
+                header={ "Content-Type": "application/json","Authorization": "Bearer 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"};
+            }
             if(document.getElementById("memory").checked){
                 console.log("chequeado")
                 if(data.memory){
@@ -283,7 +299,7 @@
             let next_prompt="prompt"+(num);
             if(document.getElementById(next_prompt)==null){
                 create_new_prompts_inputs(false);
-                api_call("back.php", JSON.stringify({functionName: 'insertNewInitialPrompt', args: [input ,interation,1]}),null,set_id_prompt,number)
+                api_call("back.php", JSON.stringify({functionName: 'insertNewInitialPrompt', args: [input ,interation,sessionStorage.ID]}),null,set_id_prompt,number)
                 control_insertion_prompts[number]=false;
             }
             document.getElementById(next_prompt).value=document.getElementById(next_prompt).value+"\nAPI RESPONE: "+prompt_content;        
@@ -332,7 +348,7 @@
                 api_call("back.php", JSON.stringify({functionName: 'insertNewIterationPrompt', args: [ ids_prompts[1] ,number_actual_block-2,content]}),{})
                 control_insertion_prompts[number]=false;
             }
-            document.getElementById(next_prompt).value=document.getElementById(next_prompt).value+"\nAPI RESPONE: "+content;
+           // document.getElementById(next_prompt).value=document.getElementById(next_prompt).value+"\nAPI RESPONE: "+content;
         }
         function create_new_prompts_inputs(loading_old_data,element){
                 interation++;
@@ -389,13 +405,13 @@
                 number_new_block++;
         }
         function delete_interaction(){
-            console.log(ids_prompts)
+            console.log(number_iteration_watching)
             $.ajax({
                 type : "POST",  
                 url  : "back.php",  
-                data : { remove_interaction : number_iteration_watching, prompt_id:ids_prompts[1]},
+                data : { remove_interaction : iterarion_id[number_iteration_watching], prompt_id:ids_prompts[1]},
                 success: function(res){  
-                    location.reload();       
+                   location.reload();       
                 }
             });
             
@@ -440,11 +456,11 @@
             }else{
                 console.log("actualizando")
                 //Update of the current prompt
-                if(number==1){
+                if(number_iteration_watching==1){
                     api_call("back.php", JSON.stringify({functionName: 'updateInitialPrompt', args: [input ,ids_prompts[1]]}),{})
                 }else{
                     //Update of the nexts prompts
-                    api_call("back.php", JSON.stringify({functionName: 'updateIterationPrompt', args: [input ,number,ids_prompts[1]]}),{})
+                    api_call("back.php", JSON.stringify({functionName: 'updateIterationPrompt', args: [input ,number_iteration_watching,ids_prompts[1]]}),{})
                 }
             }
             all_data_from_db[number]=input;
@@ -458,6 +474,7 @@
             }
             else
             {
+                console.log(sessionStorage)
                 sessionStorage.clear();
                 sessionStorage.setItem("error","Session expired, log again");
                 window.location.href = "login_agpt.php"; // redirect to login page
@@ -476,8 +493,8 @@
                 }
                 
             }else if(data.not_found){
-                 window.location.href = "login_agpt.php"; // redirect to login page
-                 sessionStorage.clear();
+                window.location.href = "login_agpt.php"; // redirect to login page
+                sessionStorage.clear();
             }else if(data.internal_error){
                 sessionStorage.clear();
             }

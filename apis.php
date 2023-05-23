@@ -1,4 +1,5 @@
 <?php
+session_start();
 $data = json_decode(file_get_contents('php://input'), true);
 $functionName = $data['functionName'];
 $args = $data['args'];

@@ -52,7 +52,6 @@ function activate_local_storage(data) {
 
     if (data.not_found) {
 
-        console.log("rgd")
 
         document.getElementById("wrong_credentials").removeAttribute("hidden");
 

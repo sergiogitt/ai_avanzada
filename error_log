@@ -105,3 +105,30 @@ Stack trace:
 [16-May-2023 10:22:32 UTC] PHP Warning:  Array to string conversion in /home/aijk/public_html/autogpt/back.php on line 61
 [16-May-2023 11:08:20 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home/aijk/public_html/autogpt/back.php:57) in /home/aijk/public_html/autogpt/back.php on line 18
 [16-May-2023 11:10:37 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home/aijk/public_html/autogpt/back.php:53) in /home/aijk/public_html/autogpt/back.php on line 18
+[22-May-2023 09:16:39 UTC] PHP Warning:  Undefined array key "id" in /home/aijk/public_html/autogpt/back.php on line 294
+[22-May-2023 09:17:09 UTC] PHP Warning:  Undefined array key "id" in /home/aijk/public_html/autogpt/back.php on line 294
+[22-May-2023 09:18:37 UTC] PHP Warning:  Undefined array key "ID" in /home/aijk/public_html/autogpt/views/header.php on line 10
+[22-May-2023 09:20:00 UTC] PHP Warning:  Undefined array key "ID" in /home/aijk/public_html/autogpt/views/header.php on line 10
+[22-May-2023 09:22:52 UTC] PHP Warning:  Undefined array key "ID" in /home/aijk/public_html/autogpt/views/header.php on line 10
+[22-May-2023 09:27:38 UTC] PHP Warning:  Undefined array key "ID" in /home/aijk/public_html/autogpt/views/header.php on line 10
+[22-May-2023 09:27:51 UTC] PHP Warning:  Undefined array key "ID" in /home/aijk/public_html/autogpt/views/header.php on line 10
+[22-May-2023 09:28:29 UTC] PHP Warning:  Undefined array key "ID" in /home/aijk/public_html/autogpt/views/header.php on line 10
+[22-May-2023 09:31:15 UTC] PHP Warning:  Undefined array key "ID" in /home/aijk/public_html/autogpt/views/header.php on line 10
+[22-May-2023 09:33:49 UTC] PHP Warning:  Undefined array key "ID" in /home/aijk/public_html/autogpt/views/header.php on line 10
+[22-May-2023 09:34:27 UTC] PHP Warning:  Undefined array key "ID" in /home/aijk/public_html/autogpt/views/header.php on line 10
+[22-May-2023 09:34:34 UTC] PHP Warning:  Undefined array key "ID" in /home/aijk/public_html/autogpt/views/header.php on line 10
+[22-May-2023 09:42:48 UTC] PHP Warning:  Undefined array key "ID" in /home/aijk/public_html/autogpt/views/header.php on line 10
+[22-May-2023 09:44:01 UTC] PHP Warning:  Undefined array key "ID" in /home/aijk/public_html/autogpt/views/header.php on line 10
+[22-May-2023 09:52:35 UTC] PHP Warning:  Array to string conversion in /home/aijk/public_html/autogpt/back.php on line 189
+[22-May-2023 09:55:47 UTC] PHP Warning:  Array to string conversion in /home/aijk/public_html/autogpt/back.php on line 189
+[22-May-2023 10:04:21 UTC] PHP Warning:  Trying to access array offset on value of type bool in /home/aijk/public_html/autogpt/back.php on line 295
+[22-May-2023 10:05:09 UTC] PHP Warning:  Trying to access array offset on value of type bool in /home/aijk/public_html/autogpt/back.php on line 295
+[22-May-2023 10:09:10 UTC] PHP Parse error:  syntax error, unexpected token "exit" in /home/aijk/public_html/autogpt/back.php on line 299
+[22-May-2023 10:09:20 UTC] PHP Parse error:  syntax error, unexpected token "exit" in /home/aijk/public_html/autogpt/back.php on line 299
+[22-May-2023 10:15:43 UTC] PHP Parse error:  syntax error, unexpected token "exit" in /home/aijk/public_html/autogpt/back.php on line 299
+[22-May-2023 10:15:50 UTC] PHP Parse error:  Unclosed '{' on line 477 in /home/aijk/public_html/autogpt/back.php on line 487
+[22-May-2023 11:10:34 UTC] PHP Warning:  Array to string conversion in /home/aijk/public_html/autogpt/back.php on line 249
+[22-May-2023 11:11:00 UTC] PHP Warning:  Array to string conversion in /home/aijk/public_html/autogpt/back.php on line 249
+[22-May-2023 11:11:08 UTC] PHP Warning:  Array to string conversion in /home/aijk/public_html/autogpt/back.php on line 249
+[22-May-2023 11:12:33 UTC] PHP Warning:  Array to string conversion in /home/aijk/public_html/autogpt/back.php on line 248
+[22-May-2023 11:12:54 UTC] PHP Warning:  Array to string conversion in /home/aijk/public_html/autogpt/back.php on line 248

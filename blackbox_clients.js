@@ -1,5 +1,5 @@
 if (!sessionStorage.ID) {
-    window.location.href = "login_agpt.php"; // redirect to login page
+   // window.location.href = "login_agpt.php"; // redirect to login page
 }
 // Set a timeout of 5 minutes (300000 milliseconds)
 setTimeout(function () {
@@ -40,7 +40,13 @@ function load_users() {
                     var newColumn2 = document.createElement("div");
                     newColumn2.setAttribute("id", "name_user_" + element.ID);
                     var id = document.createTextNode(element.ID);
+                    var key;
                     link.appendChild(name);
+                    if(element.apikey){
+                        key=element.apikey;
+                    }else{
+                        key="Deffault";
+                    }
 
 
 
@@ -48,8 +54,8 @@ function load_users() {
                     newRow.appendChild(newColumn2);
                     newTable.appendChild(newRow);
                     if (sessionStorage.rol == "admin") {
-                        link.setAttribute("onclick", `security(create_session,['${element.ID}'])`);
-                        let actionButton = "<div id='action_button_" + element.ID + "'><button class='button_link' onClick=\"security(edit_user,['" + element.ID + "','" + element.display_name + "'])\">Edit</button><button class='button_link' onClick=\"security(delete_user,['" + element.ID + "','" + element.display_name + "'])\">Delete</button></div>";
+                        link.setAttribute("onclick", `security(create_session,['${element.ID}','${key}'])`);
+                        let actionButton = "<div>"+((key!="Deffault")?("Key:"+(key.substring(0,5)+"...")):("Key:"+key))+"</div><div id='action_button_" + element.ID + "'><button class='button_link' onClick=\"security(edit_user,['" + element.ID + "','" + element.display_name + "'])\">Edit</button><button class='button_link' onClick=\"security(delete_user,['" + element.ID + "','" + element.display_name + "'])\">Delete</button></div>";
                         newRow.innerHTML += actionButton;
                     }
                     wrapper.appendChild(newTable);
@@ -67,8 +73,10 @@ function security(todo, params = null) {
 
     }
     else {
-        sessionStorage.clear();
-        sessionStorage.setItem("error", "Session expired, log again");
+        console.log(sessionStorage)
+        //sessionStorage.clear();
+        //sessionStorage.setItem("error", "Session expired, log again");
+        
         window.location.href = "login_agpt.php"; // redirect to login page
 
         console.log("no cumple tmepo")
@@ -107,8 +115,9 @@ function analize_security_response(data, ar) {
         sessionStorage.clear();
     }
 }
-function create_session(id) {
-    sessionStorage.setItem("auto_gpt_view_user", id);
+function create_session(ar) {
+    sessionStorage.setItem("auto_gpt_view_user", ar[0]);
+    sessionStorage.setItem("auto_gpt_view_user_key", ar[1]);
     console.log(sessionStorage)
     window.location.href = 'autogpt.php';
 }

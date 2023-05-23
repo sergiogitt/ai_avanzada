@@ -1,7 +1,7 @@
 
 
 if (!sessionStorage.ID) {
-    window.location.href = "login_agpt.php"; // redirect to login page
+   // window.location.href = "login_agpt.php"; // redirect to login page
 }
 // Set a timeout of 5 minutes (300000 milliseconds)
 setTimeout(function () {
@@ -20,11 +20,12 @@ function security(todo, params = null) {
         api_call("back.php", JSON.stringify({ functionName: 'logUser', args: [sessionStorage.user, sessionStorage.password] }), {}, analize_security_response, [todo, params]);
     }
     else {
+        console.log(sessionStorage)
         sessionStorage.clear();
         sessionStorage.setItem("error", "Session expired, log again");
-        window.location.href = "login_agpt.php"; // redirect to login page
 
-        console.log("no cumple tmepo")
+       // window.location.href = "login_agpt.php"; // redirect to login page
+
 
     }
 }

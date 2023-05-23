@@ -47,6 +47,43 @@ function mergeFiles($id){
     {
         $folder_user="./uploaded_files/".$id."-files";
         $files = scandir($folder_user);
+        if(!$files){
+            mkdir($folder_user);
+        }
+
+        $mergedContent = ''; // Variable to store the merged content
+
+        foreach ($files as $file) {
+            if ($file !== '.' && $file !== '..') {
+                // Read the content of each file
+                $content = file_get_contents($folder_user ."/". $file);
+                
+                // Append the content to the merged content variable
+                $mergedContent .= $content." ";
+                unlink($folder_user ."/". $file);
+            }
+        }
+        $mergedFilePath =$folder_user."/".$id."_merged_".time();
+
+        file_put_contents($mergedFilePath, $mergedContent);
+        echo json_encode(["correct"=> 'Merged']);
+
+    }
+    catch(PDOException $e)
+    {     
+        echo "Can't execute the queries. Error: ".$e->getMessage();
+    }
+}
+function mergedFiles($id){
+    
+    try
+    {
+        $folder_user="./uploaded_files/".$id."-files";
+        if(!is_dir($folder_user)){
+            mkdir($folder_user);
+        }
+        $files = scandir($folder_user);
+       
         $mergedContent = ''; // Variable to store the merged content
 
         foreach ($files as $file) {
@@ -75,9 +112,12 @@ function getMemory($id){
     try
     {
         $folder_user="./uploaded_files/".$id."-files";
+        if(!is_dir($folder_user)){
+            mkdir($folder_user);
+        }
         $files = scandir($folder_user);
         if(count($files)>1){
-            mergeFiles($id);
+            mergedFiles($id);
         }
         $file = scandir($folder_user)[2];
         $content = file_get_contents($folder_user ."/". $file);
@@ -226,7 +266,6 @@ function updateInitialPrompt($prompt,$prompt_id){
         $data[]=date("Y-m-d H:i:s");
         $data[]=$prompt_id;
         $sentence->execute($data);
-        $sentence->execute($data);
         echo json_encode(["updated"=>"Prompt updated correctly"]);
        
     }
@@ -243,9 +282,8 @@ function updateIterationPrompt($prompt,$iteration,$prompt_id){
         $sentence=$conection->prepare($query);
         $data[]=$prompt;
         $data[]=date("Y-m-d H:i:s");
-        $data[]=$iteration;
+        $data[]=$iteration[0];
         $data[]=$prompt_id;
-
         $sentence->execute($data);
         echo json_encode(["updated"=>"Prompt updated correctly"]);
        
@@ -277,6 +315,40 @@ function getFirstData($customer_id){
    }
 
 }
+if (isset($_POST["logUser"])){
+
+    try
+   {
+    $conection=start_conection();
+    $query="select * from tbl_users where display_name=? and password=?";
+    $sentence=$conection->prepare($query);
+    $data[]=$_POST["user"];
+    $data[]=md5($_POST["password"]);
+    $sentence->execute($data);
+    if($sentence->rowCount()>0){
+        session_start();
+        $_SESSION["user"]=$_POST["user"];
+        $_SESSION["password"]=md5($_POST["password"]);
+        $result=$sentence->fetch(PDO::FETCH_ASSOC);
+        $_SESSION["ID"]=$result["ID"];
+        $_SESSION["rol"]=$result["rol"];
+       
+       header("Location:autogpt.php");
+       exit;
+        
+        echo  json_encode($sentence->fetch(PDO::FETCH_ASSOC));
+    }else{
+        echo  json_encode(["not_found"=>"Not found that client".$_POST["user"]." ".$_POST["password"]]);
+    }
+       
+       
+   }
+   catch(PDOException $e)
+   {
+       echo  json_encode(["internal_error"=>"Cant execute the query. Error:".$e->getMessage()]);
+   }
+
+}
 function logUser($user,$password){
     try
    {
@@ -300,6 +372,7 @@ function logUser($user,$password){
    }
 
 }
+
 
 
 function getSecondData($prompt_id){

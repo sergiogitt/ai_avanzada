@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,24 +13,26 @@
 </head>
 <body>
     <div id="wrapper">
+        <form action="back.php" method="post">
         <div id="login">
             <div>
                 <label for="user">User:<span hidden id="user_empty">*</span></label>
-                <input type="text" id="user">
+                <input type="text" id="user" name="user">
                 
             </div>
             <div>
                 <label for="password">Password:<span id="password_empty" hidden>*</span></label>
-                <input type="password" id="password">
+                <input type="password" id="password" name="password">
             </div>
             <div id="btn_login">
-                <button onclick="log_user()">Login</button>
+                <button name="logUser">Login</button>
             </div>
             <div >
                <p hidden id="empty_field">Please,fill in the fields marked with *</p>
                <p hidden id="wrong_credentials">Wrong credentials</p>
             </div>
         </div>
+    </form>
     
     </div>
 </body>

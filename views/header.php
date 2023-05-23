@@ -1,7 +1,22 @@
 <?php
+session_start();
 $PATH="https://advancedthinkingmethods.com/autogpt";
 ?>
+<script>
+  sessionStorage.setItem("user","<?php echo $_SESSION["user"];
+  ?>");
+   sessionStorage.setItem("password","<?php echo $_SESSION["password"];
+  ?>");
+   sessionStorage.setItem("ID","<?php echo $_SESSION["ID"];
+  ?>");
+   sessionStorage.setItem("rol","<?php echo $_SESSION["rol"];
+  ?>");
+     sessionStorage.setItem("last_action","<?php echo time();
+  ?>");
+ 
 
+
+</script>
 <div class="menu">
 
         <ul>
