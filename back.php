@@ -30,7 +30,7 @@ function saveFile($content,$name,$id){
 
         // Check if the operation was successful
         if ($result !== false) {
-            echo json_encode(["error"=> 'File created and content saved successfully.']);
+            echo json_encode(["uploaded"=> 'File created and content saved successfully.']);
         } else {
             echo json_encode(["error"=>  'Failed to create the file or save the content.']);
         }
@@ -107,7 +107,7 @@ function mergedFiles($id){
         echo "Can't execute the queries. Error: ".$e->getMessage();
     }
 }
-function getMemory($id){
+function getMemory($id,$prompt){
     
     try
     {
@@ -121,6 +121,7 @@ function getMemory($id){
         }
         $file = scandir($folder_user)[2];
         $content = file_get_contents($folder_user ."/". $file);
+        $content=summariseContent($file,"Summarise and leave all technichal and important information in this text: ".$content);
         echo json_encode(["memory"=> $content]);
 
     }
@@ -128,6 +129,48 @@ function getMemory($id){
     {     
         echo "Can't execute the queries. Error: ".$e->getMessage();
     }
+}
+function summariseContent($folder_user,$prompt){
+    $endpoint = "https://api.openai.com/v1/chat/completions";
+    $apiKey = "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";
+
+    $headers = array(
+        "Content-Type: application/json",
+        "Authorization: Bearer " . $apiKey
+    );
+
+    $data = array(
+        "model" => "gpt-3.5-turbo",
+        "messages" => array(
+            array(
+                "role" => "user",
+                "content" => $prompt
+            )
+        ),
+        "temperature" => 0.7
+    );
+
+    $ch = curl_init($endpoint);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+    $response = curl_exec($ch);
+    curl_close($ch);
+
+    // Handle the response
+    if ($response === false) {
+        // Request failed
+        echo "Error: " . curl_error($ch);
+    } else {
+        // Request succeeded
+        $responseData = json_decode($response, true);
+        file_put_contents($folder_user, $responseData["choices"][0]["message"]["content"]);
+        return $responseData["choices"][0]["message"]["content"];
+        // Process the response data as needed
+       
+}
 }
 function insert_file_on_db($location,$id){
     try

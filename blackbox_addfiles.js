@@ -34,28 +34,32 @@ function converPDFintoText() {
     var file = fileInput.files[0];
 
     var reader = new FileReader();
-
+    var content="";
     reader.onload = function (event) {
         var buffer = event.target.result;
 
         // Load the PDF from the ArrayBuffer
         pdfjsLib.getDocument(buffer).promise.then(function (pdf) {
-            // Get the first page of the PDF
-            pdf.getPage(1).then(function (page) {
-                // Extract the text content from the page
-                page.getTextContent().then(function (textContent) {
-                    // Concatenate the text items to form the complete text
-                    var text = "";
-                    textContent.items.forEach(function (item) {
-                        text += item.str + " ";
-                    });
+            var numPages=pdf.numPages;
+            for(let i=1;i<=numPages;i++){
+                pdf.getPage(i).then(function (page) {
+                    // Extract the text content from the page
+                    page.getTextContent().then(function (textContent) {
+                        // Concatenate the text items to form the complete text
+                        var text = "";
+                        textContent.items.forEach(function (item) {
+                            text += item.str + " ";
+                        });
+                        content+=text;
 
-                    // Output the extracted text
-                    console.log(text);
-                    console.log(file)
-                    api_call('back.php', JSON.stringify({ functionName: 'saveFile', args: [text, file.name, sessionStorage.ID] }), {}, reload_page, null);
+                        
+                    });
                 });
-            });
+            }
+            console.log(content)
+            api_call('back.php', JSON.stringify({ functionName: 'saveFile', args: [content, file.name, sessionStorage.ID] }), {}, reload_page, null);
+            // Get the first page of the PDF
+            
         }).catch(function (error) {
             console.error("Error loading PDF: " + error);
         });
@@ -158,7 +162,7 @@ function delete_file(file) {
 }
 function reload_page() {
     console.log("recargando");
-    window.location.href = "addfiles.php";
+    //window.location.href = "addfiles.php";
 }
 function show_files(data) {
     var wrapper = document.getElementById("user_wrapp");

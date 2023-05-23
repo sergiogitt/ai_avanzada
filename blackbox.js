@@ -211,7 +211,7 @@
                 }else{
                     let prompt_content=document.getElementById(prompt_id).value;
                     if(document.getElementById("memory").checked){
-                        get_memory("Here is some info that im going to ask for:"+prompt_content+"   ",model_choiced,number);
+                        get_memory("Here is some info that im going to ask for:"+prompt_content+"   "+sessionStorage.user+":",model_choiced,number);
                     }else{
                         openai_call(null,[prompt_content,model_choiced,number])
                     }
@@ -230,7 +230,7 @@
             
         }
         function get_memory(prompt_content,model,number){
-            api_call("back.php", JSON.stringify({functionName: 'getMemory', args: [sessionStorage.ID]}),{},openai_call,[prompt_content,model,number])
+            api_call("back.php", JSON.stringify({functionName: 'getMemory', args: [sessionStorage.ID,prompt_content]}),{},openai_call,[prompt_content,model,number])
 
         }
         function show(data){
@@ -249,7 +249,6 @@
                 header={ "Content-Type": "application/json","Authorization": "Bearer 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"};
             }
             if(document.getElementById("memory").checked){
-                console.log("chequeado")
                 if(data.memory){
                     ar[0]=data.memory+ar[0];
                 }
