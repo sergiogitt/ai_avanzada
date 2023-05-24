@@ -1,0 +1,1 @@
+The commands "taskkill /PID 12345 /F", "netstat -ano", and "netstat -ano | findstr :3306" are repeated multiple times in this text. These commands are used for killing a process with a specific ID, and checking the network status for connections on port 3306.

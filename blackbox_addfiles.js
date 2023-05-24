@@ -32,32 +32,44 @@ function security(todo, params = null) {
 function converPDFintoText() {
     var fileInput = document.getElementById("fileInput");
     var file = fileInput.files[0];
-
+    let text = "";
     var reader = new FileReader();
-    var content="";
     reader.onload = function (event) {
+        let contentFile="";
+
         var buffer = event.target.result;
 
         // Load the PDF from the ArrayBuffer
         pdfjsLib.getDocument(buffer).promise.then(function (pdf) {
-            var numPages=pdf.numPages;
+            let numPages=pdf.numPages;
+            
             for(let i=1;i<=numPages;i++){
                 pdf.getPage(i).then(function (page) {
+                   
                     // Extract the text content from the page
                     page.getTextContent().then(function (textContent) {
                         // Concatenate the text items to form the complete text
-                        var text = "";
+                       
                         textContent.items.forEach(function (item) {
                             text += item.str + " ";
+                            
                         });
-                        content+=text;
+                        //console.log(text)
+                        contentFile+=text;
+                        //console.log(contentFile)
 
                         
                     });
+                    console.log(i==numPages)
+                    if(i==numPages&&text.length>0){
+                        console.log(text)
+                        api_call('back.php', JSON.stringify({ functionName: 'saveFile', args: [text, file.name, sessionStorage.ID] }), {}, reload_page, null);
+                    }
                 });
+                
             }
-            console.log(content)
-            api_call('back.php', JSON.stringify({ functionName: 'saveFile', args: [content, file.name, sessionStorage.ID] }), {}, reload_page, null);
+           
+           
             // Get the first page of the PDF
             
         }).catch(function (error) {

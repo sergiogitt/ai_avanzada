@@ -1,0 +1,1 @@
+The text repeatedly runs the commands "taskkill /PID 12345 /F", "netstat -ano", and "netstat -ano | findstr :3306". These are technical commands used to force terminate a process with a certain PID, display network statistics, and filter those statistics to show only connections on port 3306.

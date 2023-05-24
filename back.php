@@ -121,7 +121,7 @@ function getMemory($id,$prompt){
         }
         $file = scandir($folder_user)[2];
         $content = file_get_contents($folder_user ."/". $file);
-        $content=summariseContent($file,"Summarise and leave all technichal and important information in this text: ".$content);
+        $content=summariseContent($folder_user."/".$file,"Summarise and leave all technichal and important information in this text: ".$content);
         echo json_encode(["memory"=> $content]);
 
     }
@@ -168,6 +168,7 @@ function summariseContent($folder_user,$prompt){
         $responseData = json_decode($response, true);
         file_put_contents($folder_user, $responseData["choices"][0]["message"]["content"]);
         return $responseData["choices"][0]["message"]["content"];
+
         // Process the response data as needed
        
 }
