@@ -62,17 +62,33 @@
             let input=document.getElementById("prompt1");
             input.value=all_data_from_db[number];
             input.removeAttribute("oninput");
-            input.setAttribute("oninput",`inserting_into_db('${number}')`);
+            console.log(iterarion_id)
+            let new_id=iterarion_id[number];
+            input.setAttribute("oninput",`inserting_into_db('${new_id}')`);
+           // input.setAttribute("oninput",`inserting_into_db('${number}')`);
             let iteration_button=document.getElementById("iteration"+number_iteration_watching);     
             iteration_button.classList.remove("selected");
             let new_visualization=document.getElementById("iteration"+number); 
             new_visualization.classList.add("selected");
             number_iteration_watching=number;
+            let next_iteration=number++;
+            next_iteration++;
+           
+            if(all_data_from_db[next_iteration]){
+                let response_text=document.createTextNode(all_data_from_db[next_iteration])
+                document.getElementById("response_ai").innerHTML="";
+                document.getElementById("response_ai").appendChild(response_text)
+            }else{
+                document.getElementById("response_ai").innerHTML="";
+            }
+        }
+        function refreshInput(data){
+            newTextarea.setAttribute("oninput",`inserting_into_db('${data}')`);
         }
         function create_new_iteration_button(data,create_button=false){
             if(!create_button){
                 if(Array.isArray(data)){
-                    data.forEach(element => {
+                    data.forEach((element,index) => {
                         var newIteration = document.createElement("button");
                         newIteration.setAttribute("id", "iteration"+number_new_block);
                         newIteration.setAttribute("class", "iteration_button shadow");
@@ -82,10 +98,15 @@
                         document.getElementById("iterations").append(newIteration);
                         number_actual_block++;
                         number_new_block++;
+                        if(index==0){
+                            let response_text=document.createTextNode(element.prompt_content)
+                            document.getElementById("response_ai").appendChild(response_text)
+                        }
         
                     });
                     fill_all_info(data)
                 }else{
+                    api_call("back.php", JSON.stringify({functionName: 'getLastId', args: [ids_prompts[1] ]}),{},refreshInput,null)
                     var newIteration = document.createElement("button");
                     newIteration.setAttribute("id", "iteration"+number_new_block);
                     newIteration.setAttribute("class", "iteration_button shadow");
@@ -334,32 +355,42 @@
             document.getElementById("response").appendChild(newP);
             let num=number;
             num++;
-            let next_prompt="prompt"+(num);
-            let next=number_actual_block++;
-            console.log(number_actual_block)
-           console.log(all_data_from_db)
-           console.log(next)
-          
-            if(all_data_from_db.length<=number_actual_block){
-                console.log("creando nuevo")
-               create_new_iteration_button(data.choices[0].message.content)
-
-                api_call("back.php", JSON.stringify({functionName: 'insertNewIterationPrompt', args: [ ids_prompts[1] ,number_actual_block-2,content]}),{})
-                control_insertion_prompts[number]=false;
-            }
-           // document.getElementById(next_prompt).value=document.getElementById(next_prompt).value+"\nAPI RESPONE: "+content;
+            let next=number_actual_block++;    
+            let next_iteration=number_iteration_watching++;
+            next_iteration++;      
+           // if(all_data_from_db.length<=number_actual_block){
+            let a=iterarion_id.find(e=>e==number_iteration_watching)
+            console.log(iterarion_id)
+            console.log(number_iteration_watching)
+                if(all_data_from_db[next_iteration]){
+                    console.log("updating")
+                    api_call("back.php", JSON.stringify({functionName: 'updateIterationPrompt', args: [ content,[iterarion_id[next_iteration]], ids_prompts[1] ]}),{})
+                        control_insertion_prompts[number]=true;
+                        all_data_from_db[next_iteration]=content;
+                }else{
+                    console.log("inserting new");
+                    create_new_iteration_button(data.choices[0].message.content)
+                    api_call("back.php", JSON.stringify({functionName: 'insertNewIterationPrompt', args: [ ids_prompts[1] ,number_actual_block-2,content]}),{})
+                    control_insertion_prompts[number]=false;
+                }
+                
+           // }
         }
         function create_new_prompts_inputs(loading_old_data,element){
                 interation++;
                 //Creating elemenst dinamically
                 var newDiv = document.createElement("div");
                 newDiv.setAttribute("id", "block"+number_new_block);
-
+                console.log("im in")
+             
                 var newTextarea = document.createElement("textarea");
                 newTextarea.setAttribute("id", "prompt"+number_new_block);
                 newTextarea.setAttribute("rows", "20");
+              
                 newTextarea.setAttribute("cols", "70");
-                newTextarea.setAttribute("oninput",`inserting_into_db('${number_new_block}')`);
+
+                let new_id=iterarion_id[number];
+                newTextarea.setAttribute("oninput",`inserting_into_db('${new_id}')`);
                 if(loading_old_data){
                     newTextarea.innerHTML=element.prompt_content;
                     var remove_iteration_id=element.prompt_iteration;
@@ -459,7 +490,7 @@
                     api_call("back.php", JSON.stringify({functionName: 'updateInitialPrompt', args: [input ,ids_prompts[1]]}),{})
                 }else{
                     //Update of the nexts prompts
-                    api_call("back.php", JSON.stringify({functionName: 'updateIterationPrompt', args: [input ,number_iteration_watching,ids_prompts[1]]}),{})
+                    api_call("back.php", JSON.stringify({functionName: 'updateIterationPrompt', args: [input ,[number_iteration_watching-1],ids_prompts[1]]}),{})
                 }
             }
             all_data_from_db[number]=input;

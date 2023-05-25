@@ -1,7 +1,7 @@
 
 
 if (!sessionStorage.ID) {
-   // window.location.href = "login_agpt.php"; // redirect to login page
+    // window.location.href = "login_agpt.php"; // redirect to login page
 }
 // Set a timeout of 5 minutes (300000 milliseconds)
 setTimeout(function () {
@@ -24,7 +24,7 @@ function security(todo, params = null) {
         sessionStorage.clear();
         sessionStorage.setItem("error", "Session expired, log again");
 
-       // window.location.href = "login_agpt.php"; // redirect to login page
+        // window.location.href = "login_agpt.php"; // redirect to login page
 
 
     }
@@ -32,46 +32,59 @@ function security(todo, params = null) {
 function converPDFintoText() {
     var fileInput = document.getElementById("fileInput");
     var file = fileInput.files[0];
-    let text = "";
+    let fullTextContent ="";
+    let mover="";
+    let x;
     var reader = new FileReader();
-    reader.onload = function (event) {
-        let contentFile="";
-
+    reader.onload = function (event) {       
         var buffer = event.target.result;
-
         // Load the PDF from the ArrayBuffer
         pdfjsLib.getDocument(buffer).promise.then(function (pdf) {
-            let numPages=pdf.numPages;
-            
-            for(let i=1;i<=numPages;i++){
+            let numPages = pdf.numPages;
+            console.log(numPages)
+           
+            for (let i=1; i <= numPages; i++) {
                 pdf.getPage(i).then(function (page) {
-                   
+
                     // Extract the text content from the page
                     page.getTextContent().then(function (textContent) {
                         // Concatenate the text items to form the complete text
-                       
-                        textContent.items.forEach(function (item) {
-                            text += item.str + " ";
+
+                        textContent.items.forEach(function (item ,idx, array) {
+                            //console.log(item.str);
+                            fullTextContent = fullTextContent + item.str;
+                            mover=fullTextContent;
+                            console.log(mover)
+                            if ((idx ==( array.length - 1))&&(i==numPages)){ 
+                                api_call('back.php', JSON.stringify({ functionName: 'saveFile', args: [mover, file.name, sessionStorage.ID] }), {}, reload_page, null);
+                            }
                             
                         });
-                        //console.log(text)
-                        contentFile+=text;
+                       // console.log(text)
+                        // console.log("First:"+text)
+                        //text += text;
+                        // console.log("Second"+text)
                         //console.log(contentFile)
 
-                        
+
                     });
-                    console.log(i==numPages)
-                    if(i==numPages&&text.length>0){
-                        console.log(text)
-                        api_call('back.php', JSON.stringify({ functionName: 'saveFile', args: [text, file.name, sessionStorage.ID] }), {}, reload_page, null);
+                    x=i;
+                   // console.log(x == numPages)
+                    
+                    if (x == numPages && mover.length > 0) {
+                        //console.log(text)
+                        
+                       
                     }
+                    console.log(mover)
                 });
-                
+
             }
-           
-           
+          
+
+
             // Get the first page of the PDF
-            
+
         }).catch(function (error) {
             console.error("Error loading PDF: " + error);
         });
@@ -79,8 +92,8 @@ function converPDFintoText() {
 
     reader.readAsArrayBuffer(file);
 }
-function merge_files(){
-    api_call('back.php', JSON.stringify({ functionName: 'mergeFiles', args: [sessionStorage.ID] }), {},reload_page,null);
+function merge_files() {
+    api_call('back.php', JSON.stringify({ functionName: 'mergeFiles', args: [sessionStorage.ID] }), {}, reload_page, null);
 }
 function add_file() {
 
@@ -180,7 +193,7 @@ function show_files(data) {
     var wrapper = document.getElementById("user_wrapp");
     var newTable = document.createElement("ul");
     newTable.id = "list_of_users";
-    if(data.length>1){
+    if (data.length > 1) {
         document.getElementById("merge_files_button").removeAttribute("disabled");
     }
     data.forEach(element => {

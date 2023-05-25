@@ -337,6 +337,28 @@ function updateIterationPrompt($prompt,$iteration,$prompt_id){
         echo "Cant execute the query. Error:".$e->getMessage();
     }
 }
+function getLastId($prompt_id){
+    try
+   {
+    $conection=start_conection();
+    $query="select * from tbl_prompt_iterations where PROMPT_ID=? order by PROMPT_ID desc limit 1";
+    $sentence=$conection->prepare($query);
+    $data[]=$prompt_id;
+    $sentence->execute($data);
+    if($sentence->rowCount()==1){
+        echo  json_encode($sentence->fetch(PDO::FETCH_ASSOC)["prompt_iteration"]);
+    }else{
+        echo  json_encode(["not_found"=>"Not found that client"]);
+    }
+       
+       
+   }
+   catch(PDOException $e)
+   {
+       echo "Cant execute the query. Error:".$e->getMessage();
+   }
+
+}
 function getFirstData($customer_id){
     try
    {
