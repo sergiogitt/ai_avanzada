@@ -29,6 +29,10 @@ function security(todo, params = null) {
 
     }
 }
+function optimize_file(){
+    api_call("back.php", JSON.stringify({functionName: 'getMemory', args: [sessionStorage.ID,""]}),{},reload_page,null)
+
+}
 function converPDFintoText() {
     var fileInput = document.getElementById("fileInput");
     var file = fileInput.files[0];
